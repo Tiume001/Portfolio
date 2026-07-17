@@ -3,7 +3,7 @@ const lenisInstance = new Lenis({
     lerp: 0.08, // Valore bilanciato ottimale per desktop e mouse
     smoothWheel: true,
     wheelMultiplier: 1,
-    touchMultiplier: 0.35, 
+    touchMultiplier: 0.7, 
     smoothTouch: true, 
     syncTouch: true,   
     infinite: true // Abilita lo scorrimento infinito
