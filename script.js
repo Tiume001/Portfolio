@@ -4,8 +4,8 @@ const lenisInstance = new Lenis({
     smoothWheel: true,
     wheelMultiplier: 1,
     touchMultiplier: 2, 
-    smoothTouch: false, 
-    syncTouch: false,   
+    smoothTouch: true, 
+    syncTouch: true,   
     infinite: true // Abilita lo scorrimento infinito
 });
 lenisInstance.on('scroll', ScrollTrigger.update);
@@ -282,7 +282,8 @@ function initScrollAnimations(){
             content: overlayScrollArea.querySelector('.overlay-lenis-content'),
             lerp: 0.04,
             smoothWheel: true,
-            syncTouch: false
+            smoothTouch: true,
+            syncTouch: true
         });
         gsap.ticker.remove(rafOverlay);
         gsap.ticker.add(rafOverlay);
