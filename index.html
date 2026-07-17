@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mattia Scarpa — Developer Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:['Space Grotesk','sans-serif']},colors:{bg:'#0a0a0a',text:'#f0f0f0','text-sec':'#888','text-ter':'#3a3a3a'}}}}
+</script>
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="bg-bg text-text font-body">
+
+<!-- Preloader -->
+<div class="preloader">
+    <span class="preloader-text">M. SCARPA</span>
+    <div class="preloader-bar"><div class="preloader-fill"></div></div>
+</div>
+
+<!-- Noise -->
+<div class="noise"></div>
+
+<!-- Cursor -->
+<div class="tech-cursor">
+    <div class="tech-cursor-dot"></div>
+</div>
+
+<!-- Scroll Progress -->
+<div class="scroll-progress"><div class="scroll-progress-fill" id="scrollProgress"></div></div>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+    <a href="#about" class="text-text-sec hover:text-text" onclick="closeMobileMenu()">About</a>
+    <a href="#approach" class="text-text-sec hover:text-text" onclick="closeMobileMenu()">Approach</a>
+    <a href="#work" class="text-text-sec hover:text-text" onclick="closeMobileMenu()">Work</a>
+    <a href="#skills" class="text-text-sec hover:text-text" onclick="closeMobileMenu()">Skills</a>
+    <a href="#experience" class="text-text-sec hover:text-text" onclick="closeMobileMenu()">Experience</a>
+    <a href="#contact" class="text-text-sec hover:text-text" onclick="closeMobileMenu()">Contact</a>
+</div>
+
+<!-- Project Overlay -->
+<div id="projectOverlay" class="fixed inset-0 bg-bg flex flex-col h-[100dvh] overflow-hidden" style="display: none; z-index: 9999;">
+    <div class="absolute top-0 left-0 right-0 p-6 md:p-10 flex justify-between items-center z-10 pointer-events-none">
+        <div class="w-10"></div> <!-- spacer -->
+        <button id="closeOverlayBtn" class="w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center pointer-events-auto transition-colors hoverable">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+    </div>
+    
+    <div id="overlayScrollArea" class="flex-1 overflow-y-auto w-full overscroll-none" data-lenis-prevent>
+        <div class="overlay-lenis-content">
+        <div class="w-full h-[60dvh] md:h-[70dvh] relative">
+            <img id="overlayHeroImg" src="" alt="" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-bg via-bg/40 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-6 md:p-10 lg:p-16">
+                <span id="overlayCat" class="text-[10px] uppercase tracking-[0.3em] text-text-ter block mb-4"></span>
+                <h2 id="overlayTitle" class="font-display font-extrabold text-4xl md:text-6xl lg:text-7xl tracking-tight mb-6"></h2>
+                <div id="overlayTags" class="flex gap-2 flex-wrap"></div>
+            </div>
+        </div>
+        
+        <div class="px-6 md:px-10 lg:px-16 py-16 md:py-24 max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8">
+                <div class="md:col-span-8">
+                    <h3 class="font-display font-bold text-2xl md:text-3xl mb-6">Il Progetto</h3>
+                    <div id="overlayDesc" class="text-text-sec text-base md:text-lg leading-relaxed space-y-6"></div>
+                </div>
+                <div class="md:col-span-4 flex flex-col gap-8">
+                    <div>
+                        <span class="text-[10px] uppercase tracking-[0.2em] text-text-ter block mb-2">Ruolo</span>
+                        <p id="overlayRole" class="text-text"></p>
+                    </div>
+                    <div>
+                        <span class="text-[10px] uppercase tracking-[0.2em] text-text-ter block mb-2">Anno</span>
+                        <p id="overlayYear" class="text-text"></p>
+                    </div>
+                    <div id="overlayLinkContainer">
+                        <span class="text-[10px] uppercase tracking-[0.2em] text-text-ter block mb-2">Link</span>
+                        <a id="overlayLink" href="#" target="_blank" class="text-text hover:text-text-sec transition-colors underline underline-offset-4 hoverable">Visita il progetto</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="gallerySection" class="mt-20 md:mt-32">
+                <h3 class="font-display font-bold text-2xl md:text-3xl mb-8">Galleria</h3>
+                <div id="overlayGallery" class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                    <!-- Gallery images injected via JS -->
+                </div>
+            </div>
+            <div class="h-20"></div>
+        </div>
+        </div>
+    </div>
+</div>
+
+<!-- Nav -->
+<nav class="nav-bar fixed top-0 left-0 right-0 z-[100] px-6 md:px-10 lg:px-16 py-5 flex items-center justify-between">
+    <a href="#" class="font-display font-extrabold text-base tracking-tight hoverable">M.S</a>
+    <div class="hidden md:flex items-center gap-8 lg:gap-10">
+        <a href="#about" class="nav-link text-[12px] text-text-sec hover:text-text transition-colors duration-300 tracking-widest uppercase hoverable">About</a>
+        <a href="#work" class="nav-link text-[12px] text-text-sec hover:text-text transition-colors duration-300 tracking-widest uppercase hoverable">Work</a>
+        <a href="#skills" class="nav-link text-[12px] text-text-sec hover:text-text transition-colors duration-300 tracking-widest uppercase hoverable">Skills</a>
+        <a href="#contact" class="nav-link text-[12px] text-text-sec hover:text-text transition-colors duration-300 tracking-widest uppercase hoverable">Contact</a>
+    </div>
+    <button class="md:hidden w-10 h-10 flex items-center justify-center hoverable" id="menuToggle" aria-label="Menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/></svg>
+    </button>
+</nav>
+
+<!-- Hero -->
+<section class="hero relative h-[100dvh] flex items-center overflow-hidden px-6 md:px-10 lg:px-16">
+    <div class="hero-vignette"></div>
+    <div class="hero-content relative z-10 w-full md:w-[60%] lg:w-[55%]">
+        <div class="overflow-hidden mb-0.5 md:mb-1">
+            <div class="hero-line font-display font-extrabold text-[15vw] md:text-[11vw] lg:text-[8.5vw] leading-[0.85] tracking-[-0.04em]">MATTIA</div>
+        </div>
+        <div class="overflow-hidden mb-1 md:mb-2">
+            <div class="hero-line font-display font-extrabold text-[15vw] md:text-[11vw] lg:text-[8.5vw] leading-[0.85] tracking-[-0.04em]">SCARPA</div>
+        </div>
+        <div class="hero-role text-text-sec text-[11px] md:text-xs tracking-[0.2em] uppercase mt-4 md:mt-6 opacity-0 h-5">
+            <span id="roleText"></span><span class="type-cursor"></span>
+        </div>
+        <div class="hero-subtitle mt-6 md:mt-8 text-text-ter text-[10px] md:text-[11px] tracking-[0.25em] uppercase opacity-0">
+            Developer &bull; Based in Milan
+        </div>
+    </div>
+    <div class="hero-object absolute right-[3%] md:right-[8%] lg:right-[14%] top-1/2 opacity-0" style="transform:translateY(-50%) scale(0.6)">
+        <div class="cube-scene">
+            <div class="cube">
+                <div class="cube-face front"><span></span><span></span><span></span><span></span></div>
+                <div class="cube-face back"><span></span><span></span><span></span><span></span></div>
+                <div class="cube-face right"><span></span><span></span><span></span><span></span></div>
+                <div class="cube-face left"><span></span><span></span><span></span><span></span></div>
+                <div class="cube-face top"><span></span><span></span><span></span><span></span></div>
+                <div class="cube-face bottom"><span></span><span></span><span></span><span></span></div>
+                <div class="cube-core"></div>
+            </div>
+        </div>
+    </div>
+    <div class="hero-scroll absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 opacity-0">
+        <span class="text-[8px] uppercase tracking-[0.4em] text-text-ter">Scroll</span>
+        <div class="w-[1px] h-8 bg-text-ter relative overflow-hidden rounded-full">
+            <div class="w-full h-1/2 bg-text scroll-line-inner"></div>
+        </div>
+    </div>
+</section>
+
+<!-- Marquee -->
+<section class="py-6 md:py-8 border-t border-b border-white/[0.04] overflow-hidden">
+    <div class="marquee-track">
+        <div class="flex items-center gap-6 md:gap-10 px-3 md:px-5 whitespace-nowrap">
+            <span class="font-display font-bold text-sm md:text-lg tracking-tight text-text-sec/50">React</span>
+            <span class="w-1 h-1 rounded-full bg-text-ter flex-shrink-0"></span>
+            <span class="font-display font-bold text-sm md:text-lg tracking-tight text-text-sec/50">TypeScript</span>
+            <span class="w-1 h-1 rounded-full bg-text-ter flex-shrink-0"></span>
+            <span class="font-display font-bold text-sm md:text-lg tracking-tight text-text-sec/50">Next.js</span>
+            <span class="w-1 h-1 rounded-full bg-text-ter flex-shrink-0"></span>
+            <span class="font-display font-bold text-sm md:text-lg tracking-tight text-text-sec/50">Node.js</span>
+            <span class="w-1 h-1 rounded-full bg-text-ter flex-shrink-0"></span>
+            <span class="font-display font-bold text-sm md:text-lg tracking-tight text-text-sec/50">Python</span>
+            <span class="w-1 h-1 rounded-full bg-text-ter flex-shrink-0"></span>
+            <span class="font-display font-bold text-sm md:text-lg tracking-tight text-text-sec/50">PostgreSQL</span>
+            <span class="w-1 h-1 rounded-full bg-text-ter flex-shrink-0"></span>
+            <span class="font-display font-bold text-sm md:text-lg tracking-tight text-text-sec/50">AWS</span>
+            <span class="w-1 h-1 rounded-full bg-text-ter flex-shrink-0"></span>
+            <span class="font-display font-bold text-sm md:text-lg tracking-tight text-text-sec/50">Docker</span>
+            <span class="w-1 h-1 rounded-full bg-text-ter flex-shrink-0"></span>
+            <span class="font-display font-bold text-sm md:text-lg tracking-tight text-text-sec/50">GraphQL</span>
+            <span class="w-1 h-1 rounded-full bg-text-ter flex-shrink-0"></span>
+        </div>
+        <div class="flex items-center gap-6 md:gap-10 px-3 md:px-5 whitespace-nowrap" aria-hidden="true">
+            <span class="font-display font-bold text-sm md:text-lg tracking-tight text-text-sec/50">React</span>
+            <span class="w-1 h-1 rounded-full bg-text-ter flex-shrink-0"></span>
+            <span class="font-display font-bold text-sm md:text-lg tracking-tight text-text-sec/50">TypeScript</span>
+            <span class="w-1 h-1 rounded-full bg-text-ter flex-shrink-0"></span>
+            <span class="font-display font-bold text-sm md:text-lg tracking-tight text-text-sec/50">Next.js</span>
+            <span class="w-1 h-1 rounded-full bg-text-ter flex-shrink-0"></span>
+            <span class="font-display font-bold text-sm md:text-lg tracking-tight text-text-sec/50">Node.js</span>
+            <span class="w-1 h-1 rounded-full bg-text-ter flex-shrink-0"></span>
+            <span class="font-display font-bold text-sm md:text-lg tracking-tight text-text-sec/50">Python</span>
+            <span class="w-1 h-1 rounded-full bg-text-ter flex-shrink-0"></span>
+            <span class="font-display font-bold text-sm md:text-lg tracking-tight text-text-sec/50">PostgreSQL</span>
+            <span class="w-1 h-1 rounded-full bg-text-ter flex-shrink-0"></span>
+            <span class="font-display font-bold text-sm md:text-lg tracking-tight text-text-sec/50">AWS</span>
+            <span class="w-1 h-1 rounded-full bg-text-ter flex-shrink-0"></span>
+            <span class="font-display font-bold text-sm md:text-lg tracking-tight text-text-sec/50">Docker</span>
+            <span class="w-1 h-1 rounded-full bg-text-ter flex-shrink-0"></span>
+            <span class="font-display font-bold text-sm md:text-lg tracking-tight text-text-sec/50">GraphQL</span>
+            <span class="w-1 h-1 rounded-full bg-text-ter flex-shrink-0"></span>
+        </div>
+    </div>
+</section>
+
+<!-- About -->
+<section id="about" class="py-20 md:py-32 px-6 md:px-10 lg:px-16">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-6">
+        <div class="lg:col-span-7">
+            <span class="text-[10px] uppercase tracking-[0.3em] text-text-ter block mb-6">( About )</span>
+            <p class="text-lg md:text-xl lg:text-[1.65rem] leading-[1.45] tracking-tight text-text-sec">
+                <span class="reveal-line"><span class="reveal-line-inner">I build digital products that sit at the</span></span>
+                <span class="reveal-line"><span class="reveal-line-inner">intersection of clean engineering and</span></span>
+                <span class="reveal-line"><span class="reveal-line-inner">thoughtful design. With 5+ years of</span></span>
+                <span class="reveal-line"><span class="reveal-line-inner">experience, I focus on creating performant,</span></span>
+                <span class="reveal-line"><span class="reveal-line-inner">scalable applications that solve real</span></span>
+                <span class="reveal-line"><span class="reveal-line-inner">problems with elegant solutions.</span></span>
+            </p>
+            <div class="h-line mt-12 md:mt-16"><div class="h-line-fill" id="aboutLine"></div></div>
+        </div>
+        <div class="lg:col-span-4 lg:col-start-9 flex flex-col justify-end gap-8 md:gap-10 pt-8 lg:pt-0">
+            <div class="stat-item" data-target="5"><div class="stat-num text-text-sec">0</div><div class="text-[10px] uppercase tracking-[0.2em] text-text-ter mt-1.5">Years Experience</div></div>
+            <div class="stat-item" data-target="40"><div class="stat-num text-text-sec">0</div><div class="text-[10px] uppercase tracking-[0.2em] text-text-ter mt-1.5">Projects Shipped</div></div>
+            <div class="stat-item" data-target="15"><div class="stat-num text-text-sec">0</div><div class="text-[10px] uppercase tracking-[0.2em] text-text-ter mt-1.5">Tech Stack</div></div>
+        </div>
+    </div>
+</section>
+
+<!-- Approach (Sticky) -->
+<section id="approach" class="relative">
+    <div class="approach-wrapper" style="height:400vh">
+        <div class="approach-sticky sticky top-0 h-[100dvh] flex items-center px-6 md:px-10 lg:px-16 overflow-hidden">
+            <div class="w-full grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-12 items-center">
+                <div class="md:col-span-4 relative">
+                    <span class="text-[10px] uppercase tracking-[0.3em] text-text-ter block mb-6">( How I Work )</span>
+                    <div class="step-number" id="stepNumber">01</div>
+                </div>
+                <div class="md:col-span-7 md:col-start-6 relative" style="min-height:180px">
+                    <div class="approach-step">
+                        <h3 class="font-display font-bold text-xl md:text-3xl lg:text-4xl tracking-tight mb-3 md:mb-4">Understand</h3>
+                        <p class="text-text-sec text-sm md:text-base lg:text-lg leading-relaxed max-w-lg">Every great product starts with deep understanding. I dive into requirements, user needs, and technical constraints to map the optimal path forward.</p>
+                    </div>
+                    <div class="approach-step">
+                        <h3 class="font-display font-bold text-xl md:text-3xl lg:text-4xl tracking-tight mb-3 md:mb-4">Architect</h3>
+                        <p class="text-text-sec text-sm md:text-base lg:text-lg leading-relaxed max-w-lg">Clean architecture is the foundation of scalable software. I design systems that are maintainable, testable, and built to evolve with your product.</p>
+                    </div>
+                    <div class="approach-step">
+                        <h3 class="font-display font-bold text-xl md:text-3xl lg:text-4xl tracking-tight mb-3 md:mb-4">Build</h3>
+                        <p class="text-text-sec text-sm md:text-base lg:text-lg leading-relaxed max-w-lg">Writing code is craftsmanship. Every line is intentional — performant, accessible, and maintainable. I build with modern tools and proven patterns.</p>
+                    </div>
+                    <div class="approach-step">
+                        <h3 class="font-display font-bold text-xl md:text-3xl lg:text-4xl tracking-tight mb-3 md:mb-4">Refine</h3>
+                        <p class="text-text-sec text-sm md:text-base lg:text-lg leading-relaxed max-w-lg">The last 10% makes all the difference. I optimize performance, polish interactions, and ensure every detail meets the highest standard before delivery.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Work -->
+<section id="work" class="work-wrapper">
+    <div class="work-section pb-6 md:pb-10 pt-10 md:pt-16">
+    <div class="px-6 md:px-10 lg:px-16 mb-8 md:mb-14 flex items-end justify-between">
+        <div>
+            <span class="text-[10px] uppercase tracking-[0.3em] text-text-ter block mb-3">( Selected Work )</span>
+            <h2 class="font-display font-extrabold text-2xl md:text-4xl lg:text-5xl tracking-tight reveal-line"><span class="reveal-line-inner">Featured Projects</span></h2>
+        </div>
+        <span class="hidden md:block text-[10px] uppercase tracking-[0.2em] text-text-ter">2021 — 2024</span>
+    </div>
+    <div class="work-track pl-6 md:pl-10 lg:pl-16 pr-6 md:pr-10 lg:pr-16">
+        <div class="work-card hoverable">
+            <img src="assets/projects/tour-guide/cover.png" alt="Guida Turistica App">
+            <span class="work-card-cat">Web / Presentazione</span>
+            <div class="work-card-overlay"></div>
+            <div class="work-card-info">
+                <h3 class="font-display font-bold text-lg md:text-2xl tracking-tight mb-1.5">Guida Turistica App</h3>
+                <p class="text-text-sec text-xs md:text-sm">Web app multilingua con login riservato per ascolto tracce audio offline, mappe e PDF informativi.</p>
+                <div class="work-card-tags"><span class="work-card-tag">HTML</span><span class="work-card-tag">CSS</span><span class="work-card-tag">JavaScript</span></div>
+            </div>
+        </div>
+        <div class="work-card hoverable">
+            <img src="assets/projects/venezia-app/newCover.png" alt="Gestione Lavori Venezia">
+            <span class="work-card-cat">iOS / Web App</span>
+            <div class="work-card-overlay"></div>
+            <div class="work-card-info">
+                <h3 class="font-display font-bold text-lg md:text-2xl tracking-tight mb-1.5">Gestione Lavori Venezia</h3>
+                <p class="text-text-sec text-xs md:text-sm">App gestionale iOS whitelabel con mappa interattiva 3D per coordinare lavori e smaltimenti, basata su Swift, MapKit JS e Supabase.</p>
+                <div class="work-card-tags"><span class="work-card-tag">Swift</span><span class="work-card-tag">MapKit JS</span><span class="work-card-tag">Supabase</span><span class="work-card-tag">iOS</span></div>
+            </div>
+        </div>
+        <div class="work-card hoverable">
+            <img src="assets/projects/old-portfolio/card-cover.png" alt="Vecchio Portfolio">
+            <span class="work-card-cat">Web / Portfolio</span>
+            <div class="work-card-overlay"></div>
+            <div class="work-card-info">
+                <h3 class="font-display font-bold text-lg md:text-2xl tracking-tight mb-1.5">Vecchio Portfolio</h3>
+                <p class="text-text-sec text-xs md:text-sm">Il mio precedente portfolio personale, ancora attivo come archivio storico dei miei primi lavori e della mia evoluzione tecnica.</p>
+                <div class="work-card-tags"><span class="work-card-tag">HTML</span><span class="work-card-tag">CSS</span><span class="work-card-tag">JS</span></div>
+            </div>
+        </div>
+        <div class="work-card hoverable">
+            <img src="assets/projects/matrix-voip/cover.png" alt="Matrix VoIP Network">
+            <span class="work-card-cat">DevOps / Networking</span>
+            <div class="work-card-overlay"></div>
+            <div class="work-card-info">
+                <h3 class="font-display font-bold text-lg md:text-2xl tracking-tight mb-1.5">Matrix VoIP Network</h3>
+                <p class="text-text-sec text-xs md:text-sm">Infrastruttura di comunicazione privata su dominio personale con PBX, Matrix ed Element, orchestrata con Docker e resa invisibile da Tailscale.</p>
+                <div class="work-card-tags"><span class="work-card-tag">Docker</span><span class="work-card-tag">Matrix</span><span class="work-card-tag">Tailscale</span><span class="work-card-tag">Element</span></div>
+            </div>
+        </div>
+        <div class="work-card hoverable">
+            <img src="project_placeholder.png" alt="Progetto Personale 1">
+            <span class="work-card-cat">Web / Personale</span>
+            <div class="work-card-overlay"></div>
+            <div class="work-card-info">
+                <h3 class="font-display font-bold text-lg md:text-2xl tracking-tight mb-1.5">Sito Personale Alpha</h3>
+                <p class="text-text-sec text-xs md:text-sm">Sito web personale sviluppato per testare nuove tecnologie e gestire contenuti in maniera dinamica.</p>
+                <div class="work-card-tags"><span class="work-card-tag">React</span><span class="work-card-tag">Tailwind</span></div>
+            </div>
+        </div>
+        <div class="work-card hoverable">
+            <img src="project_placeholder.png" alt="Progetto Personale 2">
+            <span class="work-card-cat">Web / Personale</span>
+            <div class="work-card-overlay"></div>
+            <div class="work-card-info">
+                <h3 class="font-display font-bold text-lg md:text-2xl tracking-tight mb-1.5">Sito Personale Beta</h3>
+                <p class="text-text-sec text-xs md:text-sm">Applicazione web sperimentale incentrata su layout innovativi e prestazioni di alto livello.</p>
+                <div class="work-card-tags"><span class="work-card-tag">Next.js</span><span class="work-card-tag">GSAP</span></div>
+            </div>
+        </div>
+        <div class="w-6 flex-shrink-0"></div>
+    </div>
+    </div>
+</section>
+
+<!-- Skills -->
+<section id="skills" class="py-20 md:py-32 px-6 md:px-10 lg:px-16">
+    <div class="mb-12 md:mb-16">
+        <span class="text-[10px] uppercase tracking-[0.3em] text-text-ter block mb-3">( Tech Stack )</span>
+        <h2 class="font-display font-extrabold text-2xl md:text-4xl lg:text-5xl tracking-tight reveal-line"><span class="reveal-line-inner">Skills & Tools</span></h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6 md:gap-y-7 max-w-5xl">
+        <div class="tech-item" data-level="95"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">React / Next.js</span><span class="text-[10px] text-text-ter tracking-wider">EXPERT</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
+        <div class="tech-item" data-level="92"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">TypeScript</span><span class="text-[10px] text-text-ter tracking-wider">EXPERT</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
+        <div class="tech-item" data-level="88"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">Node.js / Express</span><span class="text-[10px] text-text-ter tracking-wider">ADVANCED</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
+        <div class="tech-item" data-level="82"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">Python / FastAPI</span><span class="text-[10px] text-text-ter tracking-wider">ADVANCED</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
+        <div class="tech-item" data-level="85"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">PostgreSQL / MongoDB</span><span class="text-[10px] text-text-ter tracking-wider">ADVANCED</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
+        <div class="tech-item" data-level="80"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">AWS / Docker / CI/CD</span><span class="text-[10px] text-text-ter tracking-wider">ADVANCED</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
+        <div class="tech-item" data-level="78"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">GraphQL / REST APIs</span><span class="text-[10px] text-text-ter tracking-wider">PROFICIENT</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
+        <div class="tech-item" data-level="85"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">Tailwind / CSS Architecture</span><span class="text-[10px] text-text-ter tracking-wider">ADVANCED</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
+        <div class="tech-item" data-level="75"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">React Native</span><span class="text-[10px] text-text-ter tracking-wider">PROFICIENT</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
+        <div class="tech-item" data-level="70"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">D3.js / Data Viz</span><span class="text-[10px] text-text-ter tracking-wider">PROFICIENT</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
+        <div class="tech-item" data-level="72"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">Redis / WebSocket</span><span class="text-[10px] text-text-ter tracking-wider">PROFICIENT</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
+        <div class="tech-item" data-level="80"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">Git / Testing / Agile</span><span class="text-[10px] text-text-ter tracking-wider">ADVANCED</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
+    </div>
+</section>
+
+<!-- Experience -->
+<section id="experience" class="py-20 md:py-32 px-6 md:px-10 lg:px-16">
+    <div class="mb-12 md:mb-16">
+        <span class="text-[10px] uppercase tracking-[0.3em] text-text-ter block mb-3">( Experience )</span>
+        <h2 class="font-display font-extrabold text-2xl md:text-4xl lg:text-5xl tracking-tight reveal-line"><span class="reveal-line-inner">Where I've Worked</span></h2>
+    </div>
+    <div class="relative max-w-2xl" id="timelineSection">
+        <div class="timeline-line"><div class="timeline-fill" id="timelineFill"></div></div>
+        <div class="timeline-entry pl-8 md:pl-12 pb-14 md:pb-16 relative">
+            <div class="timeline-dot"></div>
+            <span class="text-[10px] uppercase tracking-[0.2em] text-text-ter">2023 — Present</span>
+            <h3 class="font-display font-bold text-lg md:text-xl tracking-tight mt-1.5 mb-0.5">Senior Frontend Developer</h3>
+            <p class="text-text-sec text-sm">TechCorp — Milano</p>
+            <p class="text-text-sec/50 text-sm mt-2.5 leading-relaxed">Leading frontend architecture for a B2B SaaS platform serving 50k+ users. Mentoring a team of 4, establishing code review processes, and reducing bundle size by 40%.</p>
+        </div>
+        <div class="timeline-entry pl-8 md:pl-12 pb-14 md:pb-16 relative">
+            <div class="timeline-dot"></div>
+            <span class="text-[10px] uppercase tracking-[0.2em] text-text-ter">2021 — 2023</span>
+            <h3 class="font-display font-bold text-lg md:text-xl tracking-tight mt-1.5 mb-0.5">Frontend Developer</h3>
+            <p class="text-text-sec text-sm">DigitalStudio — Roma</p>
+            <p class="text-text-sec/50 text-sm mt-2.5 leading-relaxed">Built interactive web experiences for luxury brands and startups. Shipped 15+ projects including e-commerce platforms, dashboards, and marketing sites with complex animations.</p>
+        </div>
+        <div class="timeline-entry pl-8 md:pl-12 relative">
+            <div class="timeline-dot"></div>
+            <span class="text-[10px] uppercase tracking-[0.2em] text-text-ter">2019 — 2021</span>
+            <h3 class="font-display font-bold text-lg md:text-xl tracking-tight mt-1.5 mb-0.5">Junior Developer</h3>
+            <p class="text-text-sec text-sm">WebAgency — Bologna</p>
+            <p class="text-text-sec/50 text-sm mt-2.5 leading-relaxed">Started my professional journey building responsive websites and learning modern frontend frameworks. Contributed to 20+ client projects across various industries.</p>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section id="contact" class="py-24 md:py-40 px-6 md:px-10 lg:px-16 overflow-hidden">
+    <div class="text-center">
+        <span class="text-[10px] uppercase tracking-[0.3em] text-text-ter block mb-8 md:mb-12">( Get In Touch )</span>
+        <div class="overflow-hidden"><div class="cta-text reveal-line"><span class="reveal-line-inner">LET'S BUILD</span></div></div>
+        <div class="overflow-hidden"><div class="cta-text reveal-line"><span class="reveal-line-inner">SOMETHING</span></div></div>
+        <div class="overflow-hidden"><div class="cta-text reveal-line"><span class="reveal-line-inner">TOGETHER</span></div></div>
+        <div class="mt-10 md:mt-14 reveal-line"><span class="reveal-line-inner">
+            <a href="mailto:info@mattiascarpa.it" class="inline-flex items-center gap-3 px-7 py-3.5 border border-white/15 rounded-full text-xs tracking-[0.2em] uppercase hover:bg-white hover:text-black transition-all duration-500 hoverable">
+                <span>info@mattiascarpa.it</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+            </a>
+        </span></div>
+        <div class="mt-6 flex items-center justify-center gap-6 md:gap-8 reveal-line"><span class="reveal-line-inner">
+            <a href="#" class="footer-link text-text-ter text-[11px] uppercase tracking-[0.15em] hoverable">GitHub</a>
+            <span class="text-text-ter/30">·</span>
+            <a href="#" class="footer-link text-text-ter text-[11px] uppercase tracking-[0.15em] hoverable">LinkedIn</a>
+            <span class="text-text-ter/30">·</span>
+            <a href="#" class="footer-link text-text-ter text-[11px] uppercase tracking-[0.15em] hoverable">CV / Resume</a>
+        </span></div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="border-t border-white/[0.04] px-6 md:px-10 lg:px-16 py-6 md:py-8">
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+            <span class="font-display font-extrabold text-sm tracking-tight">M.S</span>
+            <span class="text-text-ter text-[10px]">© 2024</span>
+        </div>
+        <span class="text-text-ter/50 text-[10px] tracking-wider">Designed & Developed by Mattia Scarpa</span>
+        <a href="#" class="footer-link text-text-sec text-[10px] uppercase tracking-[0.15em] hoverable flex items-center gap-1.5" onclick="lenisInstance.scrollTo(0,{duration:2});return false;">
+            <span>Back to top</span>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+        </a>
+    </div>
+</footer>
+
+<!-- Global Lightbox -->
+<div id="globalLightbox" class="fixed inset-0 z-[10000] flex items-center justify-center bg-bg/95 backdrop-blur-xl opacity-0 pointer-events-none transition-opacity duration-500">
+    <button id="closeLightboxBtn" class="absolute top-6 right-6 md:top-10 md:right-10 w-10 h-10 md:w-12 md:h-12 bg-white/5 border border-white/10 rounded-full flex items-center justify-center text-text hover:bg-white/10 transition-colors z-[10001] hoverable">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="lightbox-content-wrapper relative w-full h-full p-4 md:p-12 flex items-center justify-center">
+        <img id="lightboxImg" src="" alt="Zoomed Image" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl scale-95 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
