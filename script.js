@@ -3,7 +3,7 @@ const lenisInstance = new Lenis({
     lerp: 0.08, // Valore bilanciato ottimale per desktop e mouse
     smoothWheel: true,
     wheelMultiplier: 1,
-    touchMultiplier: 2, 
+    touchMultiplier: 1, 
     smoothTouch: true, 
     syncTouch: true,   
     infinite: true // Abilita lo scorrimento infinito
@@ -270,12 +270,17 @@ function initScrollAnimations(){
     const closeBtn = document.getElementById('closeOverlayBtn');
     const overlayScrollArea = document.getElementById('overlayScrollArea');
     let overlayLenis;
+    let overlayRafId;
 
     function rafOverlay(time) {
-        if(overlayLenis) overlayLenis.raf(time * 1000);
+        if(overlayLenis) {
+            overlayLenis.raf(time);
+            overlayRafId = requestAnimationFrame(rafOverlay);
+        }
     }
 
     function initOverlayLenis() {
+        if(overlayRafId) cancelAnimationFrame(overlayRafId);
         if(overlayLenis) overlayLenis.destroy();
         overlayLenis = new Lenis({
             wrapper: overlayScrollArea,
@@ -283,10 +288,10 @@ function initScrollAnimations(){
             lerp: 0.04,
             smoothWheel: true,
             smoothTouch: true,
-            syncTouch: true
+            syncTouch: true,
+            touchMultiplier: 1
         });
-        gsap.ticker.remove(rafOverlay);
-        gsap.ticker.add(rafOverlay);
+        overlayRafId = requestAnimationFrame(rafOverlay);
     }
 
     const wCards = document.querySelectorAll('.work-card');
@@ -369,8 +374,8 @@ function initScrollAnimations(){
         closeBtn.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
+            if(overlayRafId) cancelAnimationFrame(overlayRafId);
             if(overlayLenis) {
-                gsap.ticker.remove(rafOverlay);
                 overlayLenis.destroy();
                 overlayLenis = null;
             }
