@@ -129,6 +129,7 @@ body{background:#0a0a0a;color:#f0f0f0;font-family:'Space Grotesk',sans-serif;ove
     .cube-face { width: 140px; height: 140px; }
     .cube { --cube-z: 70px; }
     .orbit-field{width:175px;height:175px;margin:-87.5px 0 0 -87.5px}
-    .work-card{width:70vw;aspect-ratio:4/3;height:auto}
-    .work-card-info{padding:1.5rem}
+    .work-wrapper{height:500vh}
+    .work-card{width:75vw;aspect-ratio:1/1;height:auto}
+    .work-card-info{padding:1.25rem}
 }
