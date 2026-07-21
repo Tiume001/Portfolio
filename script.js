@@ -3,8 +3,8 @@ const lenisInstance = new Lenis({
     lerp: 0.08, // Valore bilanciato ottimale per desktop e mouse
     smoothWheel: true,
     wheelMultiplier: 1,
-    touchMultiplier: 1, 
-    touchInertiaMultiplier: 1,
+    touchMultiplier: 0.75, 
+    touchInertiaMultiplier: 0.8,
     smoothTouch: true, 
     syncTouch: false,   
     infinite: true // Abilita lo scorrimento infinito
@@ -290,8 +290,8 @@ function initScrollAnimations(){
             smoothWheel: true,
             smoothTouch: true,
             syncTouch: false,
-            touchMultiplier: 1,
-            touchInertiaMultiplier: 1
+            touchMultiplier: 0.75,
+            touchInertiaMultiplier: 0.8
         });
         overlayRafId = requestAnimationFrame(rafOverlay);
     }
