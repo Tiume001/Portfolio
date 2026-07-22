@@ -37,7 +37,7 @@ if('ontouchstart' in window){ if(techCursor) techCursor.style.display='none'; do
 
 // ==================== SCROLL PROGRESS ====================
 const scrollProg = document.getElementById('scrollProgress');
-lenisInstance.on('scroll', ({progress}) => { if(scrollProg) scrollProg.style.height = (progress*100)+'%'; });
+lenisInstance.on('scroll', ({progress}) => { if(scrollProg) scrollProg.style.transform = `scaleY(${progress})`; });
 
 // ==================== MOBILE MENU ====================
 const menuToggle = document.getElementById('menuToggle');
@@ -207,7 +207,7 @@ function initScrollAnimations(){
         const level = item.dataset.level;
         const fill = item.querySelector('.tech-bar-fill');
         ScrollTrigger.create({ trigger: item, start: 'top 90%', once: true, onEnter: () => {
-            setTimeout(() => { fill.style.width = level + '%'; }, i * 60);
+            gsap.to(fill, { width: level + '%', duration: 1, delay: i * 0.06, ease: 'power2.out' });
         }});
     });
 
@@ -217,7 +217,7 @@ function initScrollAnimations(){
     const timelineDots = document.querySelectorAll('.timeline-dot');
     
     gsap.to(timelineFill, {
-        height: '100%',
+        scaleY: 1,
         ease: 'none',
         scrollTrigger: { trigger: timelineSection, start: 'top 60%', end: 'bottom 60%', scrub: true }
     });
