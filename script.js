@@ -6,8 +6,7 @@ const lenisInstance = new Lenis({
     touchMultiplier: 0.75, 
     touchInertiaMultiplier: 0.8,
     smoothTouch: true, 
-    syncTouch: false,   
-    infinite: true // Abilita lo scorrimento infinito
+    syncTouch: false
 });
 lenisInstance.on('scroll', ScrollTrigger.update);
 
@@ -101,16 +100,6 @@ window.addEventListener('load', () => {
 function initScrollAnimations(){
     gsap.registerPlugin(ScrollTrigger);
 
-    // Clone Hero for seamless infinite scroll
-    const hero = document.querySelector('.hero');
-    if (hero) {
-        const clone = hero.cloneNode(true);
-        clone.classList.add('hero-clone');
-        // Rimuovi l'id per evitare duplicati
-        clone.removeAttribute('id');
-        document.body.insertBefore(clone, document.querySelector('script[src="script.js"]'));
-    }
-
     // ==================== FLOATING ANIMATION ====================
     gsap.to('.cube-scene', { y: '-=18', duration: 3.5, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 2 });
 
@@ -147,11 +136,12 @@ function initScrollAnimations(){
         });
     });
 
-    // Hero parallax (applicato a tutte le hero, inclusa la clonata)
-    gsap.utils.toArray('.hero').forEach(h => {
-        gsap.to(h.querySelector('.hero-content'), { y: -120, ease: 'none', scrollTrigger: { trigger: h, start: 'top top', end: 'bottom top', scrub: true } });
-        gsap.to(h.querySelector('.hero-object'), { y: -200, x: -80, ease: 'none', scrollTrigger: { trigger: h, start: 'top top', end: 'bottom top', scrub: true } });
-    });
+    // Hero parallax
+    const heroEl = document.querySelector('.hero');
+    if (heroEl) {
+        gsap.to(heroEl.querySelector('.hero-content'), { y: -120, ease: 'none', scrollTrigger: { trigger: heroEl, start: 'top top', end: 'bottom top', scrub: true } });
+        gsap.to(heroEl.querySelector('.hero-object'), { y: -200, x: -80, ease: 'none', scrollTrigger: { trigger: heroEl, start: 'top top', end: 'bottom top', scrub: true } });
+    }
 
     // Text reveals
     gsap.utils.toArray('.reveal-line-inner').forEach(el => {
