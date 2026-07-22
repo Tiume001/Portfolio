@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mattia Scarpa — Developer Portfolio</title>
+<title>Mattia Scarpa — Portfolio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -84,7 +84,10 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                     </div>
                     <div id="overlayLinkContainer">
                         <span class="text-[10px] uppercase tracking-[0.2em] text-text-ter block mb-2">Link</span>
-                        <a id="overlayLink" href="#" target="_blank" class="text-text hover:text-text-sec transition-colors underline underline-offset-4 hoverable">Visita il progetto</a>
+                        <a id="overlayLink" href="#" target="_blank" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-black font-medium text-xs tracking-wider uppercase hover:bg-white/90 transition-all shadow-lg hoverable">
+                            <span>Visita il sito live</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -258,17 +261,26 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
 <!-- Work -->
 <section id="work" class="work-wrapper">
     <div class="work-section pb-6 md:pb-10 pt-10 md:pt-16">
-    <div class="px-6 md:px-10 lg:px-16 mb-8 md:mb-14 flex items-end justify-between">
+    <div class="px-6 md:px-10 lg:px-16 mb-8 md:mb-14 flex items-end justify-between flex-wrap gap-4">
         <div>
             <span class="text-[10px] uppercase tracking-[0.3em] text-text-ter block mb-3">( Selected Work )</span>
             <h2 class="font-display font-extrabold text-2xl md:text-4xl lg:text-5xl tracking-tight reveal-line"><span class="reveal-line-inner">Featured Projects</span></h2>
         </div>
-        <span class="hidden md:block text-[10px] uppercase tracking-[0.2em] text-text-ter">2021 — 2024</span>
+        <div class="flex items-center gap-4">
+            <button id="toggleProjectsBtn" class="group inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/15 bg-white/[0.03] hover:bg-white/10 text-text-sec hover:text-white text-xs tracking-wider uppercase transition-all duration-300 hoverable">
+                <span id="toggleProjectsText">Mostra tutti (6)</span>
+                <svg id="toggleProjectsIcon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform duration-300"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <span class="hidden md:block text-[10px] uppercase tracking-[0.2em] text-text-ter">2021 — 2024</span>
+        </div>
     </div>
     <div class="work-track pl-6 md:pl-10 lg:pl-16 pr-6 md:pr-10 lg:pr-16">
         <div class="work-card hoverable">
             <img src="assets/projects/tour-guide/cover.png" alt="Guida Turistica App">
             <span class="work-card-cat">Web / Presentazione</span>
+            <a href="https://veniceguide.github.io" target="_blank" class="work-card-external-link hoverable" onclick="event.stopPropagation();" title="Visita il sito live">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+            </a>
             <div class="work-card-overlay"></div>
             <div class="work-card-info">
                 <h3 class="font-display font-bold text-lg md:text-2xl tracking-tight mb-1.5">Tourist Guide Website</h3>
@@ -286,9 +298,12 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                 <div class="work-card-tags"><span class="work-card-tag">Swift</span><span class="work-card-tag">MapKit JS</span><span class="work-card-tag">Supabase</span><span class="work-card-tag">iOS</span></div>
             </div>
         </div>
-        <div class="work-card hoverable">
+        <div class="work-card work-card-extra hoverable">
             <img src="assets/projects/old-portfolio/card-cover.png" alt="Vecchio Portfolio">
             <span class="work-card-cat">Web / Portfolio</span>
+            <a href="https://webauth-38128.web.app" target="_blank" class="work-card-external-link hoverable" onclick="event.stopPropagation();" title="Visita il sito live">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+            </a>
             <div class="work-card-overlay"></div>
             <div class="work-card-info">
                 <h3 class="font-display font-bold text-lg md:text-2xl tracking-tight mb-1.5">Vecchio Portfolio</h3>
@@ -296,7 +311,7 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                 <div class="work-card-tags"><span class="work-card-tag">HTML</span><span class="work-card-tag">CSS</span><span class="work-card-tag">JS</span></div>
             </div>
         </div>
-        <div class="work-card hoverable">
+        <div class="work-card work-card-extra hoverable">
             <img src="assets/projects/matrix-voip/cover.png" alt="Matrix VoIP Network">
             <span class="work-card-cat">DevOps / Networking</span>
             <div class="work-card-overlay"></div>
@@ -306,7 +321,7 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                 <div class="work-card-tags"><span class="work-card-tag">Docker</span><span class="work-card-tag">Matrix</span><span class="work-card-tag">Tailscale</span><span class="work-card-tag">Element</span></div>
             </div>
         </div>
-        <div class="work-card hoverable">
+        <div class="work-card work-card-extra hoverable">
             <img src="project_placeholder.png" alt="Progetto Personale 1">
             <span class="work-card-cat">Web / Personale</span>
             <div class="work-card-overlay"></div>
@@ -316,7 +331,7 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                 <div class="work-card-tags"><span class="work-card-tag">React</span><span class="work-card-tag">Tailwind</span></div>
             </div>
         </div>
-        <div class="work-card hoverable">
+        <div class="work-card work-card-extra hoverable">
             <img src="project_placeholder.png" alt="Progetto Personale 2">
             <span class="work-card-cat">Web / Personale</span>
             <div class="work-card-overlay"></div>
@@ -337,19 +352,38 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
         <span class="text-[10px] uppercase tracking-[0.3em] text-text-ter block mb-3">( Tech Stack )</span>
         <h2 class="font-display font-extrabold text-2xl md:text-4xl lg:text-5xl tracking-tight reveal-line"><span class="reveal-line-inner">Skills & Tools</span></h2>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6 md:gap-y-7 max-w-5xl">
-        <div class="tech-item" data-level="95"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">React / Next.js</span><span class="text-[10px] text-text-ter tracking-wider">EXPERT</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
-        <div class="tech-item" data-level="92"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">TypeScript</span><span class="text-[10px] text-text-ter tracking-wider">EXPERT</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
-        <div class="tech-item" data-level="88"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">Node.js / Express</span><span class="text-[10px] text-text-ter tracking-wider">ADVANCED</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
-        <div class="tech-item" data-level="82"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">Python / FastAPI</span><span class="text-[10px] text-text-ter tracking-wider">ADVANCED</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
-        <div class="tech-item" data-level="85"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">PostgreSQL / MongoDB</span><span class="text-[10px] text-text-ter tracking-wider">ADVANCED</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
-        <div class="tech-item" data-level="80"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">AWS / Docker / CI/CD</span><span class="text-[10px] text-text-ter tracking-wider">ADVANCED</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
-        <div class="tech-item" data-level="78"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">GraphQL / REST APIs</span><span class="text-[10px] text-text-ter tracking-wider">PROFICIENT</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
-        <div class="tech-item" data-level="85"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">Tailwind / CSS Architecture</span><span class="text-[10px] text-text-ter tracking-wider">ADVANCED</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
-        <div class="tech-item" data-level="75"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">React Native</span><span class="text-[10px] text-text-ter tracking-wider">PROFICIENT</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
-        <div class="tech-item" data-level="70"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">D3.js / Data Viz</span><span class="text-[10px] text-text-ter tracking-wider">PROFICIENT</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
-        <div class="tech-item" data-level="72"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">Redis / WebSocket</span><span class="text-[10px] text-text-ter tracking-wider">PROFICIENT</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
-        <div class="tech-item" data-level="80"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">Git / Testing / Agile</span><span class="text-[10px] text-text-ter tracking-wider">ADVANCED</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
+    <div class="max-w-5xl space-y-12 md:space-y-14">
+        <!-- Sub-block 1: Linguaggi & Frameworks -->
+        <div>
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
+                <h3 class="font-display font-bold text-base md:text-lg tracking-tight text-text uppercase">Linguaggi & Frameworks</h3>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-5 md:gap-y-6">
+                <div class="tech-item" data-level="95"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">React / Next.js</span><span class="text-[10px] text-text-ter tracking-wider">EXPERT</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
+                <div class="tech-item" data-level="92"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">TypeScript / JavaScript</span><span class="text-[10px] text-text-ter tracking-wider">EXPERT</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
+                <div class="tech-item" data-level="88"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">Swift / MapKit JS</span><span class="text-[10px] text-text-ter tracking-wider">ADVANCED</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
+                <div class="tech-item" data-level="88"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">Node.js / Express</span><span class="text-[10px] text-text-ter tracking-wider">ADVANCED</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
+                <div class="tech-item" data-level="82"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">Python / FastAPI</span><span class="text-[10px] text-text-ter tracking-wider">ADVANCED</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
+                <div class="tech-item" data-level="85"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">Tailwind / CSS Architecture</span><span class="text-[10px] text-text-ter tracking-wider">ADVANCED</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
+            </div>
+        </div>
+
+        <!-- Sub-block 2: Applicativi & Strumenti IT -->
+        <div class="pt-8 border-t border-white/5">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-2 h-2 rounded-full bg-blue-400"></div>
+                <h3 class="font-display font-bold text-base md:text-lg tracking-tight text-text uppercase">Applicativi & Strumenti IT</h3>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-5 md:gap-y-6">
+                <div class="tech-item" data-level="85"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">Docker / Containerization</span><span class="text-[10px] text-text-ter tracking-wider">ADVANCED</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
+                <div class="tech-item" data-level="85"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">VMware ESXi / vSphere</span><span class="text-[10px] text-text-ter tracking-wider">ADVANCED</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
+                <div class="tech-item" data-level="82"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">Libraesva Email Security</span><span class="text-[10px] text-text-ter tracking-wider">ADVANCED</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
+                <div class="tech-item" data-level="80"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">MailStore Server</span><span class="text-[10px] text-text-ter tracking-wider">ADVANCED</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
+                <div class="tech-item" data-level="88"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">Supabase / PostgreSQL</span><span class="text-[10px] text-text-ter tracking-wider">ADVANCED</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
+                <div class="tech-item" data-level="82"><div class="flex justify-between items-center mb-2"><span class="text-sm font-medium">Tailscale / Mesh Networking</span><span class="text-[10px] text-text-ter tracking-wider">ADVANCED</span></div><div class="tech-bar"><div class="tech-bar-fill"></div></div></div>
+            </div>
+        </div>
     </div>
 
     <!-- Certifications Subsection (Grouped by Family) -->
@@ -495,19 +529,27 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
             <p class="text-text-sec text-sm">Tour Guide Business — Venice</p>
             <p class="text-text-sec/50 text-sm mt-2.5 leading-relaxed">Designed and developed a custom website for a local tour guide business in Venice. Managed the complete frontend lifecycle, focusing on responsive design, performance optimization, and translating real client requirements into an engaging digital experience.</p>
         </div>
-        <div class="timeline-entry pl-8 md:pl-12 pb-14 md:pb-16 relative">
-            <div class="timeline-dot"></div>
-            <span class="text-[10px] uppercase tracking-[0.2em] text-text-ter">2023 — 2026</span>
-            <h3 class="font-display font-bold text-lg md:text-xl tracking-tight mt-1.5 mb-0.5">E-Waste Logistics & Internal Developer</h3>
-            <p class="text-text-sec text-sm">Re.Te. s.r.l. — Venice</p>
-            <p class="text-text-sec/50 text-sm mt-2.5 leading-relaxed">Managed maritime logistics for technological waste disposal across Venice, overseeing the entire lifecycle from client collection to mainland processing centers. Combining this operational insight with my tech skills, I independently designed and developed a database-driven map application to track jobs and streamline internal workflows.</p>
+        <div id="extraExperience" class="extra-experience-wrapper">
+            <div class="timeline-entry pl-8 md:pl-12 pb-14 md:pb-16 relative">
+                <div class="timeline-dot"></div>
+                <span class="text-[10px] uppercase tracking-[0.2em] text-text-ter">2023 — 2026</span>
+                <h3 class="font-display font-bold text-lg md:text-xl tracking-tight mt-1.5 mb-0.5">E-Waste Logistics & Internal Developer</h3>
+                <p class="text-text-sec text-sm">Re.Te. s.r.l. — Venice</p>
+                <p class="text-text-sec/50 text-sm mt-2.5 leading-relaxed">Managed maritime logistics for technological waste disposal across Venice, overseeing the entire lifecycle from client collection to mainland processing centers. Combining this operational insight with my tech skills, I independently designed and developed a database-driven map application to track jobs and streamline internal workflows.</p>
+            </div>
+            <div class="timeline-entry pl-8 md:pl-12 pb-14 md:pb-16 relative">
+                <div class="timeline-dot"></div>
+                <span class="text-[10px] uppercase tracking-[0.2em] text-text-ter">2016</span>
+                <h3 class="font-display font-bold text-lg md:text-xl tracking-tight mt-1.5 mb-0.5">Digitalization & Data Management</h3>
+                <p class="text-text-sec text-sm">Ca' Foscari University Library — Venice</p>
+                <p class="text-text-sec/50 text-sm mt-2.5 leading-relaxed">Managed the digital transition of historical manuscripts by cataloging physical assets and migrating them into complex library management systems. This early experience built a strong foundation in database management, digital archiving, and organizational precision.</p>
+            </div>
         </div>
-        <div class="timeline-entry pl-8 md:pl-12 pb-14 md:pb-16 relative">
-            <div class="timeline-dot"></div>
-            <span class="text-[10px] uppercase tracking-[0.2em] text-text-ter">2016</span>
-            <h3 class="font-display font-bold text-lg md:text-xl tracking-tight mt-1.5 mb-0.5">Digitalization & Data Management</h3>
-            <p class="text-text-sec text-sm">Ca' Foscari University Library — Venice</p>
-            <p class="text-text-sec/50 text-sm mt-2.5 leading-relaxed">Managed the digital transition of historical manuscripts by cataloging physical assets and migrating them into complex library management systems. This early experience built a strong foundation in database management, digital archiving, and organizational precision.</p>
+        <div class="mt-4 pl-8 md:pl-12">
+            <button id="toggleExperienceBtn" class="group inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full border border-white/15 bg-white/[0.03] hover:bg-white/10 text-text-sec hover:text-white text-xs tracking-wider uppercase transition-all duration-300 hoverable">
+                <span id="toggleExpText">Mostra tutte le esperienze (4)</span>
+                <svg id="toggleExpIcon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform duration-300"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
         </div>
     </div>
 </section>

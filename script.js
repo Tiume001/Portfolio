@@ -248,13 +248,13 @@ function initScrollAnimations(){
     // ==================== PROJECT OVERLAY LOGIC ====================
     const projectsData = [
         {
-            title: "Guida Turistica App", category: "Web / Presentazione", desc: "<div class='text-sm md:text-base leading-relaxed'><p class='mb-4'>Una web app moderna, sviluppata in HTML, CSS e JavaScript Vanilla, pensata per arricchire l'esperienza dei turisti durante i tour guidati. L'accesso è riservato e protetto da username e password.</p><h4 class='text-white font-display font-semibold text-lg mb-2 mt-6'>Multilingua & Home Page</h4><p class='mb-4'>L'interfaccia principale permette agli utenti di selezionare la propria lingua, offrendo un'esperienza su misura per turisti internazionali, con un design pulito e contemporaneo.</p><img src='assets/projects/tour-guide/home.png' class='w-full rounded-lg mt-4 mb-2 border border-white/10 lightbox-image cursor-pointer hover:opacity-80 transition-opacity' alt='Home Multilingua' loading='lazy'><h4 class='text-white font-display font-semibold text-lg mb-2 mt-6'>Pagine delle Attrazioni & Audio</h4><p class='mb-4'>Ogni attrazione ha una sua pagina dedicata con immagini specifiche e testi approfonditi. Inoltre, include tracce audio che possono essere riprodotte direttamente online o scaricate sul dispositivo per l'ascolto offline.</p><img src='assets/projects/tour-guide/attrazione.png' class='w-full rounded-lg mt-4 mb-2 border border-white/10 lightbox-image cursor-pointer hover:opacity-80 transition-opacity' alt='Pagina Attrazione' loading='lazy'><h4 class='text-white font-display font-semibold text-lg mb-2 mt-6'>Documentazione PDF</h4><p class='mb-4'>Per chi preferisce leggere l'intero itinerario o stamparlo, l'applicazione genera e mette a disposizione un PDF completo, impaginato professionalmente, scaricabile con un clic.</p><img src='assets/projects/tour-guide/pdfDowload.png' class='w-full rounded-lg mt-4 mb-2 border border-white/10 lightbox-image cursor-pointer hover:opacity-80 transition-opacity' alt='Download PDF' loading='lazy'></div>", role: "Frontend Developer", year: "2023", link: "#", hero: "assets/projects/tour-guide/cover.png", tags: ["HTML", "CSS", "JavaScript"], gallery: []
+            title: "Guida Turistica App", category: "Web / Presentazione", desc: "<div class='text-sm md:text-base leading-relaxed'><p class='mb-4'>Una web app moderna, sviluppata in HTML, CSS e JavaScript Vanilla, pensata per arricchire l'esperienza dei turisti durante i tour guidati. L'accesso è riservato e protetto da username e password.</p><h4 class='text-white font-display font-semibold text-lg mb-2 mt-6'>Multilingua & Home Page</h4><p class='mb-4'>L'interfaccia principale permette agli utenti di selezionare la propria lingua, offrendo un'esperienza su misura per turisti internazionali, con un design pulito e contemporaneo.</p><img src='assets/projects/tour-guide/home.png' class='w-full rounded-lg mt-4 mb-2 border border-white/10 lightbox-image cursor-pointer hover:opacity-80 transition-opacity' alt='Home Multilingua' loading='lazy'><h4 class='text-white font-display font-semibold text-lg mb-2 mt-6'>Pagine delle Attrazioni & Audio</h4><p class='mb-4'>Ogni attrazione ha una sua pagina dedicata con immagini specifiche e testi approfonditi. Inoltre, include tracce audio che possono essere riprodotte direttamente online o scaricate sul dispositivo per l'ascolto offline.</p><img src='assets/projects/tour-guide/attrazione.png' class='w-full rounded-lg mt-4 mb-2 border border-white/10 lightbox-image cursor-pointer hover:opacity-80 transition-opacity' alt='Pagina Attrazione' loading='lazy'><h4 class='text-white font-display font-semibold text-lg mb-2 mt-6'>Documentazione PDF</h4><p class='mb-4'>Per chi preferisce leggere l'intero itinerario o stamparlo, l'applicazione genera e mette a disposizione un PDF completo, impaginato professionalmente, scaricabile con un clic.</p><img src='assets/projects/tour-guide/pdfDowload.png' class='w-full rounded-lg mt-4 mb-2 border border-white/10 lightbox-image cursor-pointer hover:opacity-80 transition-opacity' alt='Download PDF' loading='lazy'></div>", role: "Frontend Developer", year: "2023", link: "https://veniceguide.github.io", hero: "assets/projects/tour-guide/cover.png", tags: ["HTML", "CSS", "JavaScript"], gallery: []
         },
         {
             title: "Gestione Lavori Venezia", category: "iOS / Web App", desc: "<div class='text-sm md:text-base leading-relaxed'><p class='mb-4'>Applicazione logistica gestionale strutturata come 'whitelabel': ogni ditta (es. smaltimento rifiuti, consegne, ritiri) può avere la propria app personalizzata mantenendo i propri dati al sicuro e isolati. L'accesso è doppiamente protetto tramite credenziali standard e <strong>scansione biometrica</strong> (Face ID / Touch ID). Progettata inizialmente per la complessa viabilità dei canali di Venezia, la sua architettura è scalabile in tutto il mondo.</p><h4 class='text-white font-display font-semibold text-lg mb-2 mt-6'>Architettura & Database</h4><p class='mb-4'>L'intero ecosistema si appoggia su <strong>Supabase</strong>, assicurando sincronizzazione immediata e sicura di codici CER, informazioni sui cantieri e foto allegate.</p><h4 class='text-white font-display font-semibold text-lg mb-2 mt-6'>Mappa Geospaziale (MapKit JS)</h4><p class='mb-4'>Il cuore dell'app è la mappa interattiva nativa in <strong>Swift</strong> basata su <strong>MapKit</strong>. Offre il tracciamento live degli operatori e il passaggio fluido tra viste (Standard, Satellite, 3D Satellite) per individuare ormeggi e lavori con precisione.</p><h4 class='text-white font-display font-semibold text-lg mb-2 mt-6'>Flusso Operativo</h4><p class='mb-4'>Include una dashboard giornaliera legata al calendario. Cliccando un'etichetta sulla mappa si apre una bacheca con tutte le info e foto allegate. È integrato un registro completo dei codici CER con ricerca rapida.</p><h4 class='text-white font-display font-semibold text-lg mb-2 mt-6'>Automazione & Import Excel</h4><p class='mb-4'>Per accelerare le assegnazioni, un tool importa i file Excel e <strong>geolocalizza automaticamente i lavori in base a sestiere e civico</strong>.</p><img src='assets/projects/venezia-app/esempioExcelToImport.png' class='w-full rounded-lg mt-4 mb-2 border border-white/10 lightbox-image cursor-pointer hover:opacity-80 transition-opacity' alt='Esempio Tabella Excel' loading='lazy'></div>", role: "Lead Developer (Swift)", year: "2024", link: "#", hero: "assets/projects/venezia-app/newCover.png", tags: ["Swift", "MapKit JS", "Supabase", "iOS"], gallery: ["assets/projects/venezia-app/0Cover.png","assets/projects/venezia-app/mappa1.png","assets/projects/venezia-app/mappa2.png","assets/projects/venezia-app/mappa3.png","assets/projects/venezia-app/mappa4.png","assets/projects/venezia-app/facciataProgramma5.png","assets/projects/venezia-app/facciataCodiciCER6.png","assets/projects/venezia-app/FacciataImportExcel7.png","assets/projects/venezia-app/supabase.png"]
         },
         {
-            title: "Vecchio Portfolio", category: "Web / Portfolio", desc: "Il mio precedente portfolio personale, sviluppato nativamente in HTML, CSS e JavaScript. Il sito è ospitato su GitHub Pages e integra Firebase per la gestione completa dell'autenticazione, permettendo un sistema di login tramite account Google, email classica o numero di telefono. Il sito include diverse sezioni funzionali mostrate nella galleria: dalla Home (1), alla gestione dinamica degli Appunti (2), l'interfaccia di Login sicura (3), una bacheca per le Certificazioni (4), l'archivio dei Progetti (5), per concludersi con una 'Sezione Nerd' (6) dedicata alle passioni più tecniche.", role: "Frontend Developer", year: "2021", link: "#", hero: "assets/projects/old-portfolio/cover.png", tags: ["HTML", "CSS", "JS", "Firebase", "GitHub"], gallery: ["assets/projects/old-portfolio/01-home.png","assets/projects/old-portfolio/02-appunti.png","assets/projects/old-portfolio/03-login.png","assets/projects/old-portfolio/04-certificazioni.png","assets/projects/old-portfolio/05-progetti.png","assets/projects/old-portfolio/06-sezione-nerd.png"]
+            title: "Vecchio Portfolio", category: "Web / Portfolio", desc: "Il mio precedente portfolio personale, sviluppato nativamente in HTML, CSS e JavaScript. Il sito è ospitato su GitHub Pages e integra Firebase per la gestione completa dell'autenticazione, permettendo un sistema di login tramite account Google, email classica o numero di telefono. Il sito include diverse sezioni funzionali mostrate nella galleria: dalla Home (1), alla gestione dinamica degli Appunti (2), l'interfaccia di Login sicura (3), una bacheca per le Certificazioni (4), l'archivio dei Progetti (5), per concludersi con una 'Sezione Nerd' (6) dedicata alle passioni più tecniche.", role: "Frontend Developer", year: "2021", link: "https://webauth-38128.web.app", hero: "assets/projects/old-portfolio/cover.png", tags: ["HTML", "CSS", "JS", "Firebase", "GitHub"], gallery: ["assets/projects/old-portfolio/01-home.png","assets/projects/old-portfolio/02-appunti.png","assets/projects/old-portfolio/03-login.png","assets/projects/old-portfolio/04-certificazioni.png","assets/projects/old-portfolio/05-progetti.png","assets/projects/old-portfolio/06-sezione-nerd.png"]
         },
         {
             title: "Matrix VoIP Network", category: "DevOps / Networking", desc: "<div class='text-sm md:text-base leading-relaxed'><p class='mb-4'>Progettazione e implementazione di un'infrastruttura di comunicazione e messaggistica privata ad alta sicurezza. Un ecosistema decentralizzato e indipendente che garantisce il controllo totale sui propri dati.</p><h4 class='text-white font-display font-semibold text-lg mb-2 mt-6'>Virtualizzazione (Docker)</h4><p class='mb-4'>L'intero ecosistema è containerizzato tramite <strong>Docker</strong>, permettendo di avviare, gestire e aggiornare i servizi (tra cui il server Matrix e il PBX VoIP) in ambienti isolati. L'orchestrazione è supportata da script di automazione (<code>.command</code>) che semplificano il deploy e la manutenzione.</p><img src='assets/projects/matrix-voip/docker.png' class='w-full rounded-lg mt-4 mb-2 border border-white/10 lightbox-image cursor-pointer hover:opacity-80 transition-opacity' alt='Configurazione Docker' loading='lazy'><h4 class='text-white font-display font-semibold text-lg mb-2 mt-6'>Sicurezza & Tunneling (Tailscale)</h4><p class='mb-4'>Per esporre i servizi in totale sicurezza, ho implementato una rete virtuale privata mesh utilizzando <strong>Tailscale</strong>. In questo modo i server comunicano tramite IP privati isolati, rendendo l'infrastruttura invisibile e inaccessibile dall'esterno se non tramite il tunnel crittografato.</p><img src='assets/projects/matrix-voip/tailscale.png' class='w-full rounded-lg mt-4 mb-2 border border-white/10 lightbox-image cursor-pointer hover:opacity-80 transition-opacity' alt='Rete Privata Tailscale' loading='lazy'><h4 class='text-white font-display font-semibold text-lg mb-2 mt-6'>Messaggistica Sovrana (Matrix & Element)</h4><p class='mb-4'>Svincolandosi dai server pubblici, il sistema utilizza il dominio personale <strong>mattiascarpa.it</strong> come nodo Matrix proprietario. Sfruttando il client <strong>Element</strong>, il setup offre un ambiente di chat crittografata end-to-end senza alcun tracciamento di terze parti.</p><img src='assets/projects/matrix-voip/Element.png' class='w-full rounded-lg mt-4 mb-2 border border-white/10 lightbox-image cursor-pointer hover:opacity-80 transition-opacity' alt='Client Chat Element' loading='lazy'></div>", role: "DevOps Engineer", year: "2023", link: "#", hero: "assets/projects/matrix-voip/cover.png", tags: ["Docker", "Matrix", "Tailscale", "Element"], gallery: []
@@ -463,3 +463,101 @@ if (globalLightbox) globalLightbox.addEventListener('click', (e) => {
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && isLightboxOpen) closeLightbox();
 });
+
+// ==================== EXPAND / COLLAPSE SECTIONS ====================
+// 1. Projects Expand / Collapse
+let projectsExpanded = false;
+const toggleProjectsBtn = document.getElementById('toggleProjectsBtn');
+const toggleProjectsText = document.getElementById('toggleProjectsText');
+const toggleProjectsIcon = document.getElementById('toggleProjectsIcon');
+const extraCards = document.querySelectorAll('.work-card-extra');
+const workWrapper = document.querySelector('.work-wrapper');
+const allWorkCards = document.querySelectorAll('.work-card');
+
+if (toggleProjectsBtn && extraCards.length > 0) {
+    toggleProjectsBtn.addEventListener('click', () => {
+        projectsExpanded = !projectsExpanded;
+        if (projectsExpanded) {
+            // Align scroll position smoothly to top of section so progress is 0 and track stays still
+            if (typeof lenisInstance !== 'undefined' && lenisInstance) {
+                lenisInstance.scrollTo(workWrapper, { duration: 0.25, offset: 0 });
+            } else if (workWrapper) {
+                workWrapper.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            extraCards.forEach(card => {
+                card.style.display = 'flex';
+                gsap.to(card, { opacity: 1, duration: 0.4, ease: 'power2.out' });
+            });
+            if (toggleProjectsText) toggleProjectsText.textContent = 'Mostra meno';
+            if (toggleProjectsIcon) toggleProjectsIcon.style.transform = 'rotate(180deg)';
+            if (workWrapper) workWrapper.classList.add('is-expanded');
+
+            setTimeout(() => {
+                ScrollTrigger.refresh();
+            }, 50);
+        } else {
+            // Smoothly scroll back to top of #work section first to prevent jump!
+            if (typeof lenisInstance !== 'undefined' && lenisInstance) {
+                lenisInstance.scrollTo(workWrapper, { duration: 0.7, offset: 0 });
+            } else {
+                workWrapper.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            setTimeout(() => {
+                extraCards.forEach(card => {
+                    gsap.to(card, { 
+                        opacity: 0, 
+                        duration: 0.3, 
+                        ease: 'power2.in', 
+                        onComplete: () => { card.style.display = 'none'; } 
+                    });
+                });
+                if (toggleProjectsText) toggleProjectsText.textContent = `Mostra tutti (${allWorkCards.length})`;
+                if (toggleProjectsIcon) toggleProjectsIcon.style.transform = 'rotate(0deg)';
+                if (workWrapper) workWrapper.classList.remove('is-expanded');
+                
+                setTimeout(() => {
+                    ScrollTrigger.refresh();
+                }, 350);
+            }, 350);
+        }
+    });
+}
+
+// 2. Experience Expand / Collapse
+let expExpanded = false;
+const toggleExpBtn = document.getElementById('toggleExperienceBtn');
+const toggleExpText = document.getElementById('toggleExpText');
+const toggleExpIcon = document.getElementById('toggleExpIcon');
+const extraExp = document.getElementById('extraExperience');
+
+if (toggleExpBtn && extraExp) {
+    toggleExpBtn.addEventListener('click', () => {
+        expExpanded = !expExpanded;
+        if (expExpanded) {
+            extraExp.classList.add('is-expanded');
+            if (toggleExpText) toggleExpText.textContent = 'Mostra meno';
+            if (toggleExpIcon) toggleExpIcon.style.transform = 'rotate(180deg)';
+            setTimeout(() => {
+                ScrollTrigger.refresh();
+            }, 400);
+        } else {
+            const expSection = document.getElementById('experience');
+            if (typeof lenisInstance !== 'undefined' && lenisInstance) {
+                lenisInstance.scrollTo(expSection, { duration: 0.6, offset: -20 });
+            } else if (expSection) {
+                expSection.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            setTimeout(() => {
+                extraExp.classList.remove('is-expanded');
+                if (toggleExpText) toggleExpText.textContent = 'Mostra tutte le esperienze (4)';
+                if (toggleExpIcon) toggleExpIcon.style.transform = 'rotate(0deg)';
+                setTimeout(() => {
+                    ScrollTrigger.refresh();
+                }, 400);
+            }, 300);
+        }
+    });
+}
