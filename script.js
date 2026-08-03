@@ -202,13 +202,20 @@ function initScrollAnimations(){
         });
     }
 
-    // ---- TECH BARS ----
-    document.querySelectorAll('.tech-item').forEach((item, i) => {
-        const level = item.dataset.level;
-        const fill = item.querySelector('.tech-bar-fill');
-        ScrollTrigger.create({ trigger: item, start: 'top 90%', once: true, onEnter: () => {
-            gsap.to(fill, { width: level + '%', duration: 1, delay: i * 0.06, ease: 'power2.out' });
-        }});
+    // ---- BENTO SKILLS ANIMATION ----
+    gsap.utils.toArray('.skill-bento-card').forEach((card, i) => {
+        gsap.from(card, {
+            y: 30,
+            opacity: 0,
+            duration: 0.75,
+            ease: 'power3.out',
+            scrollTrigger: {
+                trigger: card,
+                start: 'top 88%',
+                toggleActions: 'play none none none'
+            },
+            delay: (i % 2) * 0.12
+        });
     });
 
     // ---- TIMELINE FILL ----
