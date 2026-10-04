@@ -2,6 +2,23 @@
 // RETRO 1995 — WINDOW MANAGER & DESKTOP LOGIC (WINDOWS 95 & NETSCAPE)
 // ==========================================================================
 
+// Helper per normalizzare i percorsi degli asset relativi quando siamo nella cartella /retro/
+function fixRetroAsset(url) {
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) return url;
+    if (url.startsWith('../')) return url;
+    if (url.startsWith('/')) return url;
+    return '../' + url;
+}
+
+function fixRetroHtml(html) {
+    if (!html) return '';
+    return html
+        .replace(/src=(['"])assets\//g, 'src=$1../assets/')
+        .replace(/src=(['"])project_placeholder\.png/g, 'src=$1../project_placeholder.png')
+        .replace(/href=(['"])assets\//g, 'href=$1../assets/');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // --------------------------------------------------------------------------
     // 1. WINDOW MANAGER STORE
@@ -436,23 +453,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
             `;
-    // Helper per correggere i percorsi degli asset relativi rispetto alla cartella /retro/
-    function fixRetroAsset(url) {
-        if (!url) return '';
-        if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) return url;
-        if (url.startsWith('../')) return url;
-        if (url.startsWith('/')) return url;
-        return '../' + url;
-    }
-
-    function fixRetroHtml(html) {
-        if (!html) return '';
-        return html
-            .replace(/src=(['"])assets\//g, 'src=$1../assets/')
-            .replace(/src=(['"])project_placeholder\.png/g, 'src=$1../project_placeholder.png')
-            .replace(/href=(['"])assets\//g, 'href=$1../assets/');
-    }
-
         } else if (page === 'progetti') {
             let cardsHtml = '';
             projects.forEach(p => {
