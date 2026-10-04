@@ -436,21 +436,46 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
             `;
+    // Helper per correggere i percorsi degli asset relativi rispetto alla cartella /retro/
+    function fixRetroAsset(url) {
+        if (!url) return '';
+        if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) return url;
+        if (url.startsWith('../')) return url;
+        if (url.startsWith('/')) return url;
+        return '../' + url;
+    }
+
+    function fixRetroHtml(html) {
+        if (!html) return '';
+        return html
+            .replace(/src=(['"])assets\//g, 'src=$1../assets/')
+            .replace(/src=(['"])project_placeholder\.png/g, 'src=$1../project_placeholder.png')
+            .replace(/href=(['"])assets\//g, 'href=$1../assets/');
+    }
+
         } else if (page === 'progetti') {
             let cardsHtml = '';
             projects.forEach(p => {
                 const tagsHtml = (p.tags || []).map(t => `<span class="retro-tag">${t}</span>`).join(' ');
+                const heroSrc = fixRetroAsset(p.hero);
                 cardsHtml += `
-                    <div class="retro-card">
-                        <div style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px dotted #808080; padding-bottom: 4px; margin-bottom: 8px; flex-wrap: wrap; gap: 4px;">
-                            <h3 style="font-size: 16px; font-weight: bold; color: #000080;">${p.title}</h3>
-                            <span style="font-size: 11px; font-family: sans-serif; color: #555;">[ ${p.category} • ${p.year} ]</span>
-                        </div>
-                        <p style="font-size: 13px; line-height: 1.45; margin-bottom: 8px;">${p.shortDesc || ''}</p>
-                        <div class="retro-badge-row">${tagsHtml}</div>
-                        <div style="margin-top: 8px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-                            ${(p.link && p.link !== '#') ? `<a href="${p.link}" target="_blank" class="btn-win95" style="font-size: 11px;">🌐 Visita Sito Live</a>` : ''}
-                            <button class="retro-btn" onclick="window.viewProjectDetail('${p.id}')">🔍 Leggi Dettagli</button>
+                    <div class="retro-card" style="display: flex; gap: 14px; align-items: flex-start; flex-wrap: wrap;">
+                        ${heroSrc ? `
+                            <div style="width: 140px; flex-shrink: 0; cursor: pointer;" onclick="window.viewProjectDetail('${p.id}')">
+                                <img src="${heroSrc}" alt="${p.title}" style="width: 140px; height: 95px; object-fit: cover; border: 2px inset #808080; background: #fff;" />
+                            </div>
+                        ` : ''}
+                        <div style="flex: 1; min-width: 220px;">
+                            <div style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px dotted #808080; padding-bottom: 4px; margin-bottom: 8px; flex-wrap: wrap; gap: 4px;">
+                                <h3 style="font-size: 16px; font-weight: bold; color: #000080; cursor: pointer;" onclick="window.viewProjectDetail('${p.id}')">${p.title}</h3>
+                                <span style="font-size: 11px; font-family: sans-serif; color: #555;">[ ${p.category} • ${p.year} ]</span>
+                            </div>
+                            <p style="font-size: 13px; line-height: 1.45; margin-bottom: 8px;">${p.shortDesc || ''}</p>
+                            <div class="retro-badge-row">${tagsHtml}</div>
+                            <div style="margin-top: 8px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                                ${(p.link && p.link !== '#') ? `<a href="${p.link}" target="_blank" class="btn-win95" style="font-size: 11px;">🌐 Visita Sito Live</a>` : ''}
+                                <button class="retro-btn" onclick="window.viewProjectDetail('${p.id}')">🔍 Leggi Dettagli</button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -559,6 +584,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const tagsHtml = (p.tags || []).map(t => `<span class="retro-tag">${t}</span>`).join(' ');
+        const heroSrc = fixRetroAsset(p.hero);
+        const formattedDesc = fixRetroHtml(p.desc || p.shortDesc);
+
+        let galleryHtml = '';
+        if (p.gallery && p.gallery.length > 0) {
+            galleryHtml = `
+                <div style="margin-top: 20px; border-top: 1px dashed #808080; padding-top: 14px;">
+                    <h4 style="font-size: 14px; font-weight: bold; color: #000080; margin-bottom: 8px;">🖼️ Galleria Fotografica del Progetto:</h4>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        ${p.gallery.map(img => `
+                            <a href="${fixRetroAsset(img)}" target="_blank" title="Clicca per aprire a dimensione originale">
+                                <img src="${fixRetroAsset(img)}" style="max-height: 100px; max-width: 160px; object-fit: cover; border: 2px inset #808080; background: #fff;" alt="Screenshot">
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
 
         contentContainer.innerHTML = `
             <div style="margin-bottom: 12px;">
@@ -571,9 +614,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div class="retro-badge-row">${tagsHtml}</div>
                 <hr style="border: none; border-top: 1px solid #808080; margin: 12px 0;">
+                
+                ${heroSrc ? `
+                    <div style="margin-bottom: 14px; text-align: center;">
+                        <img src="${heroSrc}" alt="${p.title}" style="max-width: 100%; max-height: 280px; object-fit: contain; border: 2px inset #808080; background: #fff; margin: 0 auto;" />
+                    </div>
+                ` : ''}
+
                 <div style="font-size: 13.5px; line-height: 1.5; color: #222;">
-                    ${p.desc || p.shortDesc}
+                    ${formattedDesc}
                 </div>
+
+                ${galleryHtml}
+
                 ${(p.link && p.link !== '#') ? `
                     <div style="margin-top: 16px;">
                         <a href="${p.link}" target="_blank" class="btn-win95" style="font-size: 12px;">🌐 Visita il Sito Ufficiale</a>

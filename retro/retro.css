@@ -651,6 +651,16 @@ button.retro-btn:focus {
     line-height: 1.45;
 }
 
+.netscape-webpage img {
+    max-width: 100%;
+    height: auto;
+    border: 2px inset var(--w95-dark);
+    margin: 8px 0;
+    display: block;
+    background: #ffffff;
+    box-shadow: 1px 1px 4px rgba(0,0,0,0.15);
+}
+
 .retro-hero-banner {
     text-align: center;
     border: 3px double #000080;
