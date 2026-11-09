@@ -131,12 +131,12 @@ html, body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 16px;
+    width: 16px;
     height: 14px;
     padding: 0;
     background: var(--w95-bg);
     color: #000000;
-    font-size: 10px;
+    font-size: 9px;
     font-weight: bold;
     border-top: 1px solid var(--w95-light);
     border-left: 1px solid var(--w95-light);
@@ -145,6 +145,8 @@ html, body {
     box-shadow: inset 1px 1px 0 var(--w95-gray-light), inset -1px -1px 0 var(--w95-dark);
     cursor: pointer;
     line-height: 1;
+    position: relative;
+    user-select: none;
 }
 
 .title-bar-controls button:active {
@@ -155,6 +157,40 @@ html, body {
     box-shadow: none;
     padding-top: 1px;
     padding-left: 1px;
+}
+
+/* Standalone Pixel-Perfect Win95 Glyphs */
+.title-bar-controls button[aria-label="Minimize"]::before {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 2px;
+    background: #000000;
+    margin-top: 5px;
+}
+
+.title-bar-controls button[aria-label="Maximize"]::before {
+    content: '';
+    display: block;
+    width: 9px;
+    height: 8px;
+    border: 1px solid #000000;
+    border-top-width: 2px;
+}
+
+.window.is-maximized .title-bar-controls button[aria-label="Maximize"]::before {
+    width: 7px;
+    height: 6px;
+    box-shadow: 2px -2px 0 0 #c0c0c0, 2px -2px 0 1px #000000;
+}
+
+.title-bar-controls button[aria-label="Close"]::before {
+    content: '✕';
+    font-size: 9px;
+    font-weight: 900;
+    font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+    line-height: 1;
+    transform: scale(0.9);
 }
 
 /* Window Content Body */

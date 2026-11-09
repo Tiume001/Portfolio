@@ -7,12 +7,23 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+    // Immediate Theme Pre-hydration to prevent FOUC
+    (function(){
+        try {
+            var savedTheme = localStorage.getItem('portfolio_theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            }
+        } catch(e) {}
+    })();
+</script>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
 <script>
-tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:['Space Grotesk','sans-serif']},colors:{bg:'#0a0a0a',text:'#f0f0f0','text-sec':'#888','text-ter':'#3a3a3a'}}}}
+tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:['Space Grotesk','sans-serif']},colors:{bg:'var(--bg-main)',text:'var(--text-main)','text-sec':'var(--text-sec)','text-ter':'var(--text-ter)',accent:'var(--accent)'}}}}
 </script>
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -25,10 +36,14 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
     <div class="preloader-bar"><div class="preloader-fill"></div></div>
 </div>
 
+<!-- Dynamic Ambient Glows -->
+<div class="ambient-glow" id="ambientGlow"></div>
+<div class="ambient-glow-secondary"></div>
+
 <!-- Noise -->
 <div class="noise"></div>
 
-<!-- Cursor -->
+<!-- Tech Cursor -->
 <div class="tech-cursor">
     <div class="tech-cursor-dot"></div>
 </div>
@@ -44,6 +59,19 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
     <a href="#skills" class="text-text-sec hover:text-text" onclick="closeMobileMenu()">Skills</a>
     <a href="#experience" class="text-text-sec hover:text-text" onclick="closeMobileMenu()">Experience</a>
     <a href="#contact" class="text-text-sec hover:text-text" onclick="closeMobileMenu()">Contact</a>
+    
+    <!-- Mobile Theme Selector -->
+    <div class="mt-4 pt-4 border-t border-white/10 flex flex-col items-center gap-3">
+        <span class="text-[10px] uppercase tracking-[0.2em] text-text-ter">Tonalità di Colore</span>
+        <div class="flex items-center gap-3 flex-wrap justify-center">
+            <button class="w-7 h-7 rounded-full border border-white/30 bg-[#f5f5f5]" title="Obsidian" onclick="setTheme('monochrome'); closeMobileMenu();"></button>
+            <button class="w-7 h-7 rounded-full border border-white/30 bg-[#00ffaa]" title="Emerald" onclick="setTheme('emerald'); closeMobileMenu();"></button>
+            <button class="w-7 h-7 rounded-full border border-white/30 bg-[#00e5ff]" title="Cyan" onclick="setTheme('cyan'); closeMobileMenu();"></button>
+            <button class="w-7 h-7 rounded-full border border-white/30 bg-[#c084fc]" title="Violet" onclick="setTheme('violet'); closeMobileMenu();"></button>
+            <button class="w-7 h-7 rounded-full border border-white/30 bg-[#fbbf24]" title="Amber" onclick="setTheme('amber'); closeMobileMenu();"></button>
+            <button class="w-7 h-7 rounded-full border border-white/30 bg-[#ff2d55]" title="Crimson" onclick="setTheme('crimson'); closeMobileMenu();"></button>
+        </div>
+    </div>
 </div>
 
 <!-- Project Overlay -->
@@ -105,38 +133,109 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
 </div>
 
 <!-- Nav -->
-<nav class="nav-bar fixed top-0 left-0 right-0 z-[100] px-6 md:px-10 lg:px-16 py-5 flex items-center justify-between">
-    <a href="#" class="font-display font-extrabold text-base tracking-tight hoverable">M.S</a>
+<nav class="nav-bar fixed top-0 left-0 right-0 z-[100] px-6 md:px-10 lg:px-16 py-4 md:py-5 flex items-center justify-between">
+    <div class="flex items-center gap-4">
+        <a href="#" class="font-display font-extrabold text-base tracking-tight hoverable">M.S</a>
+        <div class="status-pill hidden xl:inline-flex">
+            <span class="status-dot"></span>
+            <span id="veniceTime">Venice, IT • Live CET</span>
+        </div>
+    </div>
+    
     <div class="hidden md:flex items-center gap-8 lg:gap-10">
         <a href="#about" class="nav-link text-[12px] text-text-sec hover:text-text transition-colors duration-300 tracking-widest uppercase hoverable">About</a>
         <a href="#work" class="nav-link text-[12px] text-text-sec hover:text-text transition-colors duration-300 tracking-widest uppercase hoverable">Work</a>
         <a href="#skills" class="nav-link text-[12px] text-text-sec hover:text-text transition-colors duration-300 tracking-widest uppercase hoverable">Skills</a>
+        <a href="#experience" class="nav-link text-[12px] text-text-sec hover:text-text transition-colors duration-300 tracking-widest uppercase hoverable">Experience</a>
         <a href="#contact" class="nav-link text-[12px] text-text-sec hover:text-text transition-colors duration-300 tracking-widest uppercase hoverable">Contact</a>
     </div>
-    <button class="md:hidden w-10 h-10 flex items-center justify-center hoverable" id="menuToggle" aria-label="Menu">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/></svg>
-    </button>
+
+    <div class="flex items-center gap-3">
+        <!-- Theme Switcher -->
+        <div class="theme-switcher-wrapper">
+            <button id="themeToggleBtn" class="theme-switcher-btn hoverable" aria-label="Scegli tonalità del tema" aria-expanded="false">
+                <span class="theme-active-indicator" id="themeActiveIndicator"></span>
+                <span id="themeBtnText">Palette</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div id="themeMenu" class="theme-menu">
+                <div class="theme-menu-header">Tonalità di Colore</div>
+                <button class="theme-option active" data-theme="monochrome">
+                    <div class="theme-option-left">
+                        <span class="theme-swatch" style="background: #f5f5f5; box-shadow: 0 0 6px rgba(255,255,255,0.5);"></span>
+                        <span>Obsidian Silver</span>
+                    </div>
+                    <span class="theme-check">✓</span>
+                </button>
+                <button class="theme-option" data-theme="emerald">
+                    <div class="theme-option-left">
+                        <span class="theme-swatch" style="background: #00ffaa; box-shadow: 0 0 6px rgba(0,255,170,0.6);"></span>
+                        <span>Cyber Emerald</span>
+                    </div>
+                    <span class="theme-check">✓</span>
+                </button>
+                <button class="theme-option" data-theme="cyan">
+                    <div class="theme-option-left">
+                        <span class="theme-swatch" style="background: #00e5ff; box-shadow: 0 0 6px rgba(0,229,255,0.6);"></span>
+                        <span>Electric Cyan</span>
+                    </div>
+                    <span class="theme-check">✓</span>
+                </button>
+                <button class="theme-option" data-theme="violet">
+                    <div class="theme-option-left">
+                        <span class="theme-swatch" style="background: #c084fc; box-shadow: 0 0 6px rgba(192,132,252,0.6);"></span>
+                        <span>Violet Synth</span>
+                    </div>
+                    <span class="theme-check">✓</span>
+                </button>
+                <button class="theme-option" data-theme="amber">
+                    <div class="theme-option-left">
+                        <span class="theme-swatch" style="background: #fbbf24; box-shadow: 0 0 6px rgba(251,191,36,0.6);"></span>
+                        <span>Solar Amber</span>
+                    </div>
+                    <span class="theme-check">✓</span>
+                </button>
+                <button class="theme-option" data-theme="crimson">
+                    <div class="theme-option-left">
+                        <span class="theme-swatch" style="background: #ff2d55; box-shadow: 0 0 6px rgba(255,45,85,0.6);"></span>
+                        <span>Neon Crimson</span>
+                    </div>
+                    <span class="theme-check">✓</span>
+                </button>
+            </div>
+        </div>
+
+        <button class="md:hidden w-10 h-10 flex items-center justify-center hoverable" id="menuToggle" aria-label="Menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/></svg>
+        </button>
+    </div>
 </nav>
 
 <!-- Hero -->
 <section class="hero relative h-[100dvh] flex items-center overflow-hidden px-6 md:px-10 lg:px-16">
     <div class="hero-vignette"></div>
     <div class="hero-content relative z-10 w-full md:w-[62%] lg:w-[60%] max-w-full">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/[0.03] backdrop-blur-md text-[10px] tracking-widest uppercase text-text-sec mb-5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>Full-Stack & IT Systems Specialist • Venice, IT</span>
+        </div>
         <div class="overflow-hidden mb-0.5 md:mb-1">
             <div class="hero-line font-display font-extrabold text-[13vw] md:text-[8.5vw] lg:text-[7vw] xl:text-[6.8vw] leading-[0.85] tracking-[-0.04em]">MATTIA</div>
         </div>
         <div class="overflow-hidden mb-1 md:mb-2">
-            <div class="hero-line font-display font-extrabold text-[13vw] md:text-[8.5vw] lg:text-[7vw] xl:text-[6.8vw] leading-[0.85] tracking-[-0.04em]">SCARPA</div>
+            <div class="hero-line font-display font-extrabold text-[13vw] md:text-[8.5vw] lg:text-[7vw] xl:text-[6.8vw] leading-[0.85] tracking-[-0.04em] hero-gradient-text">SCARPA</div>
         </div>
         <div class="hero-role text-text-sec text-[11px] md:text-xs tracking-[0.2em] uppercase mt-4 md:mt-6 opacity-0 h-5">
             <span id="roleText"></span><span class="type-cursor"></span>
         </div>
         <div class="hero-subtitle mt-6 md:mt-8 text-text-ter text-[10px] md:text-[11px] tracking-[0.25em] uppercase opacity-0">
-            Developer &bull; Based in Venice, Italy
+            Developer &bull; Creative Technologist &bull; Based in Venice, Italy
         </div>
     </div>
     <div class="hero-object absolute right-[3%] md:right-[8%] lg:right-[14%] top-1/2 opacity-0" style="transform:translateY(-50%) scale(0.6)">
         <div class="cube-scene">
+            <div class="cube-orbit cube-orbit-1"></div>
+            <div class="cube-orbit cube-orbit-2"></div>
             <div class="cube">
                 <div class="cube-face front"><span></span><span></span><span></span><span></span></div>
                 <div class="cube-face back"><span></span><span></span><span></span><span></span></div>
@@ -271,7 +370,7 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                 <span id="toggleProjectsText">Mostra tutti (6)</span>
                 <svg id="toggleProjectsIcon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform duration-300"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
-            <span class="hidden md:block text-[10px] uppercase tracking-[0.2em] text-text-ter">2021 — 2024</span>
+            <span class="hidden md:block text-[10px] uppercase tracking-[0.2em] text-text-ter">2021 — 2026</span>
         </div>
     </div>
     <div class="work-track pl-6 md:pl-10 lg:pl-16 pr-6 md:pr-10 lg:pr-16">
@@ -809,7 +908,7 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
         <div class="overflow-hidden"><div class="cta-text reveal-line"><span class="reveal-line-inner">SOMETHING</span></div></div>
         <div class="overflow-hidden"><div class="cta-text reveal-line"><span class="reveal-line-inner">TOGETHER</span></div></div>
         <div class="mt-10 md:mt-14 reveal-line"><span class="reveal-line-inner">
-            <a href="mailto:info@mattiascarpa.it" class="inline-flex items-center gap-3 px-7 py-3.5 border border-white/15 rounded-full text-xs md:text-sm font-medium tracking-wide lowercase hover:bg-white hover:text-black transition-all duration-500 hoverable">
+            <a href="mailto:info@mattiascarpa.it" class="cta-button inline-flex items-center gap-3 px-8 py-4 rounded-full text-xs md:text-sm font-medium tracking-wide lowercase hoverable">
                 <span>info@mattiascarpa.it</span>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
             </a>
@@ -861,7 +960,7 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
     <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div class="flex items-center gap-3">
             <span class="font-display font-extrabold text-sm tracking-tight">M.S</span>
-            <span class="text-text-ter text-[10px]">© 2024</span>
+            <span class="text-text-ter text-[10px]">© 2026</span>
         </div>
         <span class="text-text-ter/50 text-[10px] tracking-wider">Designed & Developed by Mattia Scarpa</span>
         <a href="#" class="footer-link text-text-sec text-[10px] uppercase tracking-[0.15em] hoverable flex items-center gap-1.5" onclick="lenisInstance.scrollTo(0,{duration:2});return false;">

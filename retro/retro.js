@@ -1,5 +1,5 @@
 // ==========================================================================
-// RETRO 1995 — WINDOW MANAGER & DESKTOP LOGIC (WINDOWS 95 & NETSCAPE)
+// RETRO 1995 — WINDOW MANAGER, SOUND ENGINE & DESKTOP LOGIC (WINDOWS 95)
 // ==========================================================================
 
 // Helper per normalizzare i percorsi degli asset relativi quando siamo nella cartella /retro/
@@ -19,7 +19,200 @@ function fixRetroHtml(html) {
         .replace(/href=(['"])assets\//g, 'href=$1../assets/');
 }
 
+// ==================== WEB AUDIO API RETRO SOUND ENGINE ====================
+let audioCtx = null;
+let soundEnabled = true;
+
+function getAudioCtx() {
+    if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) audioCtx = new AudioContext();
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+    return audioCtx;
+}
+
+window.playStartupSound = function() {
+    if (!soundEnabled) return;
+    const ctx = getAudioCtx();
+    if (!ctx) return;
+
+    // Classic Windows 95 chord chime: F3, C4, G4, A4, C5, E5, G5, C6
+    const chord = [
+        { f: 174.61, t: 0.0, d: 2.8, g: 0.10 },
+        { f: 261.63, t: 0.15, d: 2.6, g: 0.12 },
+        { f: 392.00, t: 0.35, d: 2.5, g: 0.13 },
+        { f: 440.00, t: 0.55, d: 2.5, g: 0.12 },
+        { f: 523.25, t: 0.75, d: 2.7, g: 0.14 },
+        { f: 659.25, t: 0.95, d: 2.7, g: 0.12 },
+        { f: 783.99, t: 1.15, d: 2.9, g: 0.11 },
+        { f: 1046.50, t: 1.35, d: 3.1, g: 0.09 }
+    ];
+
+    const now = ctx.currentTime;
+    chord.forEach(n => {
+        try {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(n.f, now + n.t);
+
+            gain.gain.setValueAtTime(0.001, now + n.t);
+            gain.gain.exponentialRampToValueAtTime(n.g, now + n.t + 0.25);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + n.t + n.d);
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc.start(now + n.t);
+            osc.stop(now + n.t + n.d);
+        } catch(e) {}
+    });
+};
+
+window.playClickSound = function() {
+    if (!soundEnabled) return;
+    const ctx = getAudioCtx();
+    if (!ctx) return;
+    try {
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(800, now);
+        osc.frequency.exponentialRampToValueAtTime(250, now + 0.03);
+        gain.gain.setValueAtTime(0.06, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.03);
+    } catch(e) {}
+};
+
+window.playDingSound = function() {
+    if (!soundEnabled) return;
+    const ctx = getAudioCtx();
+    if (!ctx) return;
+    try {
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, now);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.45);
+    } catch(e) {}
+};
+
+window.playFloppySound = function() {
+    if (!soundEnabled) return;
+    const ctx = getAudioCtx();
+    if (!ctx) return;
+    try {
+        const now = ctx.currentTime;
+        for (let i = 0; i < 4; i++) {
+            const stepTime = now + i * 0.07;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(160 + i * 15, stepTime);
+            gain.gain.setValueAtTime(0.04, stepTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, stepTime + 0.035);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(stepTime);
+            osc.stop(stepTime + 0.035);
+        }
+    } catch(e) {}
+};
+
+// ==================== SHUTDOWN DIALOG LOGIC ====================
+window.openShutdownDialog = function() {
+    if (window.playDingSound) window.playDingSound();
+    const win = document.getElementById('win-shutdown');
+    if (win) {
+        win.style.display = 'flex';
+        win.style.zIndex = '99999';
+    }
+    const startMenu = document.getElementById('startMenu');
+    if (startMenu) startMenu.classList.remove('open');
+};
+
+window.closeShutdownDialog = function() {
+    if (window.playClickSound) window.playClickSound();
+    const win = document.getElementById('win-shutdown');
+    if (win) win.style.display = 'none';
+};
+
+window.confirmShutdown = function() {
+    if (window.playClickSound) window.playClickSound();
+    const selected = document.querySelector('input[name="shutdownOpt"]:checked')?.value || '2026';
+    const win = document.getElementById('win-shutdown');
+    if (win) win.style.display = 'none';
+
+    if (selected === '2026') {
+        if (window.playDingSound) window.playDingSound();
+        document.body.innerHTML = `
+            <div style="position:fixed;inset:0;background:#000;color:#ff8800;display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:'Courier New',monospace;font-size:18px;text-align:center;padding:20px;z-index:999999;">
+                <p style="margin-bottom:12px;font-size:22px;font-weight:bold;">È ora possibile spegnere il computer con sicurezza.</p>
+                <p style="color:#33ff33;font-size:14px;">Ritorno in corso al Portfolio Moderno 2026...</p>
+            </div>
+        `;
+        setTimeout(() => {
+            window.location.href = '../';
+        }, 1100);
+    } else if (selected === 'dos') {
+        window.openApp('terminal');
+        const term = document.getElementById('win-terminal');
+        if (term) {
+            term.classList.add('is-maximized');
+            term.style.top = '0px';
+            term.style.left = '0px';
+            term.style.width = '100vw';
+            term.style.height = 'calc(100vh - 32px)';
+        }
+        if (window.appendDosOutput) {
+            window.appendDosOutput('\nSessione MS-DOS Prompt avviata a schermo intero.');
+            window.appendDosOutput("Digita '2026' per ritornare alla modalità moderna.");
+        }
+    }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
+    // Gestione avvio audio al primo tocco o click
+    let startedAudio = false;
+    document.addEventListener('click', () => {
+        if (!startedAudio) {
+            startedAudio = true;
+            window.playStartupSound();
+        }
+    }, { once: true });
+
+    // Click sound su bottoni retro
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('button, .desktop-icon, .start-menu-item, .netscape-tab, .folder-item')) {
+            window.playClickSound();
+        }
+    });
+
+    // Sound toggle nella system tray
+    const soundToggle = document.getElementById('soundToggle');
+    if (soundToggle) {
+        soundToggle.addEventListener('click', () => {
+            soundEnabled = !soundEnabled;
+            soundToggle.textContent = soundEnabled ? '🔊' : '🔇';
+            soundToggle.title = soundEnabled ? 'Audio di Sistema (Attivo - Clicca per disattivare)' : 'Audio di Sistema (Disattivato - Clicca per attivare)';
+            if (soundEnabled) window.playDingSound();
+        });
+    }
+
     // --------------------------------------------------------------------------
     // 1. WINDOW MANAGER STORE
     // --------------------------------------------------------------------------
@@ -97,7 +290,6 @@ document.addEventListener('DOMContentLoaded', () => {
         win.zIndex = highestZ;
         win.isMinimized = false;
         
-        // Aggiorna classi active
         Object.keys(windowState).forEach(key => {
             const el = document.getElementById(`win-${key}`);
             if (el) {
@@ -120,6 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
         win.isMinimized = false;
         focusWindow(id);
     }
+    window.openApp = openWindow;
 
     function closeWindow(id) {
         const win = windowState[id];
@@ -183,7 +376,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!container) return;
         container.innerHTML = '';
 
-        // Troviamo quale finestra è attiva in primo piano
         let topActiveId = null;
         let highestActiveZ = -1;
         Object.keys(windowState).forEach(id => {
@@ -230,41 +422,47 @@ document.addEventListener('DOMContentLoaded', () => {
         const titleBar = winEl.querySelector('.title-bar');
 
         winEl.addEventListener('mousedown', () => {
-            focusWindow(id);
+            if (id !== 'shutdown') focusWindow(id);
         });
 
         if (titleBar) {
             titleBar.addEventListener('mousedown', (e) => {
-                // Non avviare drag se clicchiamo sui pulsanti di controllo
                 if (e.target.closest('.title-bar-controls')) return;
-                if (isMobile() || windowState[id].isMaximized) return;
+                if (isMobile() || (windowState[id] && windowState[id].isMaximized)) return;
 
+                const curPos = (windowState[id] && windowState[id].pos) || { x: winEl.offsetLeft, y: winEl.offsetTop };
                 activeDrag = {
                     id: id,
+                    el: winEl,
                     startX: e.clientX,
                     startY: e.clientY,
-                    initialX: windowState[id].pos.x,
-                    initialY: windowState[id].pos.y
+                    initialX: curPos.x,
+                    initialY: curPos.y
                 };
-                focusWindow(id);
+                if (id !== 'shutdown') focusWindow(id);
                 e.preventDefault();
             });
 
-            // Doppio click sulla barra del titolo = toggle maximize
             titleBar.addEventListener('dblclick', (e) => {
                 if (e.target.closest('.title-bar-controls')) return;
-                if (!isMobile()) toggleMaximize(id);
+                if (!isMobile() && windowState[id]) toggleMaximize(id);
             });
         }
 
-        // Window controls buttons
         const minBtn = winEl.querySelector('[aria-label="Minimize"]');
         const maxBtn = winEl.querySelector('[aria-label="Maximize"]');
         const closeBtn = winEl.querySelector('[aria-label="Close"]');
 
         if (minBtn) minBtn.addEventListener('click', (e) => { e.stopPropagation(); minimizeWindow(id); });
         if (maxBtn) maxBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleMaximize(id); });
-        if (closeBtn) closeBtn.addEventListener('click', (e) => { e.stopPropagation(); closeWindow(id); });
+        if (closeBtn) closeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (id === 'shutdown') {
+                window.closeShutdownDialog();
+            } else {
+                closeWindow(id);
+            }
+        });
     });
 
     document.addEventListener('mousemove', (e) => {
@@ -275,13 +473,18 @@ document.addEventListener('DOMContentLoaded', () => {
         let newX = Math.max(0, Math.min(window.innerWidth - 100, activeDrag.initialX + dx));
         let newY = Math.max(0, Math.min(window.innerHeight - 60, activeDrag.initialY + dy));
         
-        windowState[activeDrag.id].pos.x = newX;
-        windowState[activeDrag.id].pos.y = newY;
+        if (windowState[activeDrag.id]) {
+            windowState[activeDrag.id].pos.x = newX;
+            windowState[activeDrag.id].pos.y = newY;
+        }
         
-        const el = document.getElementById(`win-${activeDrag.id}`);
+        const el = activeDrag.el;
         if (el) {
             el.style.left = `${newX}px`;
             el.style.top = `${newY}px`;
+            if (activeDrag.id === 'shutdown') {
+                el.style.transform = 'none';
+            }
         }
     });
 
@@ -300,7 +503,6 @@ document.addEventListener('DOMContentLoaded', () => {
             icon.classList.add('selected');
             e.stopPropagation();
 
-            // Su mobile o touch, il singolo tocco apre la finestra
             if (isMobile()) {
                 if (targetWin) openWindow(targetWin);
             }
@@ -311,7 +513,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Cliccando sul desktop vuoto si deselezionano le icone e si chiude lo Start Menu
     document.getElementById('desktop').addEventListener('click', (e) => {
         if (e.target.id === 'desktop') {
             document.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
@@ -349,7 +550,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Start Menu Items
     document.querySelectorAll('.start-menu-item').forEach(item => {
         item.addEventListener('click', () => {
             const targetWin = item.getAttribute('data-window');
@@ -384,6 +584,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const contentContainer = document.getElementById('netscapeContent');
         if (!contentContainer) return;
 
+        window.playFloppySound();
+
+        // Animate Netscape "N" logo
+        const logo = document.querySelector('.netscape-n-logo');
+        if (logo) {
+            logo.style.transform = 'scale(1.25) rotate(15deg)';
+            setTimeout(() => { logo.style.transform = ''; }, 450);
+        }
+
         netscapeTabs.forEach(t => {
             if (t.getAttribute('data-page') === page) {
                 t.classList.add('active');
@@ -397,21 +606,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const projects = window.PORTFOLIO_PROJECTS || [];
-        const info = window.PORTFOLIO_INFO || {};
 
         if (page === 'home') {
             contentContainer.innerHTML = `
                 <div class="retro-hero-banner">
-                    <h1 style="font-size: 26px; color: #000080; margin-bottom: 4px; font-weight: bold;">
+                    <h1 style="font-size: 26px; color: #000080; margin-bottom: 4px; font-weight: bold; font-family: 'Times New Roman', serif;">
                         ~*~ BENVENUTO NEL SITO PERSONALE DI MATTIA SCARPA ~*~
                     </h1>
-                    <p style="font-size: 14px; font-style: italic; color: #555;">
+                    <p style="font-size: 14px; font-style: italic; color: #444;">
                         Full-Stack Developer, Creative Technologist & IT Specialist • Venezia, Italia
                     </p>
                 </div>
 
                 <div class="retro-marquee">
-                    *** ULTIME NOTIZIE: SITO OTTIMIZZATO PER NETSCAPE NAVIGATOR 3.0 GOLD (RISOLUZIONE RACCOMANDATA 800x600 A 256 COLORI) ***
+                    *** SITO OTTIMIZZATO PER NETSCAPE NAVIGATOR 3.0 GOLD • RISOLUZIONE RACCOMANDATA 800x600 A 256 COLORI ***
                 </div>
 
                 <div style="display: flex; gap: 16px; margin: 16px 0; flex-wrap: wrap;">
@@ -426,28 +634,32 @@ document.addEventListener('DOMContentLoaded', () => {
                             Puoi esplorare le schede in alto per consultare la galleria dei <b>Progetti</b> completati, l'elenco delle <b>Competenze</b> tecniche o inviarmi una missiva telematica tramite la sezione <b>Contatti</b>.
                         </p>
                         
-                        <div style="background: #e9e9e9; border: 1px inset #808080; padding: 10px; margin-top: 12px;">
-                            <b>📌 Navigazione Rapida:</b>
-                            <ul style="margin-left: 20px; margin-top: 5px;">
-                                <li><a href="#" onclick="window.navRetro('progetti'); return false;" style="color: #0000ff;">Mostra tutti i Progetti realizzati</a></li>
-                                <li><a href="#" onclick="window.navRetro('competenze'); return false;" style="color: #0000ff;">Visualizza lo Stack Tecnologico</a></li>
-                                <li><a href="#" onclick="window.openApp('notepad'); return false;" style="color: #0000ff;">Apri il Curriculum.txt nel Blocco Note</a></li>
-                                <li><a href="#" onclick="window.openApp('terminal'); return false;" style="color: #0000ff;">Avvia la Shell MS-DOS Prompt</a></li>
+                        <div style="background: #e9e9e9; border: 2px inset #808080; padding: 12px; margin-top: 14px;">
+                            <b style="color: #000080;">📌 Navigazione Rapida:</b>
+                            <ul style="margin-left: 20px; margin-top: 6px; line-height: 1.7;">
+                                <li><a href="#" onclick="window.navRetro('progetti'); return false;" style="color: #0000ff; font-weight: bold;">📁 Mostra tutti i Progetti realizzati (6)</a></li>
+                                <li><a href="#" onclick="window.navRetro('competenze'); return false;" style="color: #0000ff; font-weight: bold;">🛠 Visualizza lo Stack Tecnologico Completo</a></li>
+                                <li><a href="#" onclick="window.openApp('notepad'); return false;" style="color: #0000ff;">📄 Apri il Curriculum.txt nel Blocco Note</a></li>
+                                <li><a href="#" onclick="window.openApp('terminal'); return false;" style="color: #0000ff;">📟 Avvia la Shell MS-DOS Prompt</a></li>
                             </ul>
                         </div>
                     </div>
 
                     <div style="flex: 1; min-width: 200px;">
                         <div class="retro-card">
-                            <h3 style="font-size: 14px; font-weight: bold; color: #000080; margin-bottom: 6px;">Statistiche Web</h3>
-                            <p style="font-size: 12px; margin-bottom: 4px;">Visitatori totali: <b>004821</b></p>
+                            <h3 style="font-size: 14px; font-weight: bold; color: #000080; margin-bottom: 6px;">Statistiche Server</h3>
+                            <p style="font-size: 12px; margin-bottom: 4px;">Visitatori totali:</p>
+                            <div style="display: inline-flex; border: 2px inset #000; background: #000; color: #00ff00; font-family: monospace; font-size: 14px; font-weight: bold; padding: 2px 6px; letter-spacing: 2px; margin-bottom: 8px;">
+                                004821
+                            </div>
                             <p style="font-size: 12px; margin-bottom: 4px;">Stato Server: <span style="color: green; font-weight: bold;">ONLINE</span></p>
                             <p style="font-size: 12px; margin-bottom: 4px;">Anni Esperienza: <b>5+</b></p>
                             <p style="font-size: 12px; margin-bottom: 8px;">Progetti Conclusi: <b>40+</b></p>
-                            <hr style="border: none; border-top: 1px solid #808080; margin: 6px 0;">
-                            <div style="text-align: center; font-size: 11px; color: #666;">
-                                <span>[ Netscape Verified ]</span><br>
-                                <span>[ No Cookies Used ]</span>
+                            <hr style="border: none; border-top: 1px solid #808080; margin: 8px 0;">
+                            <div style="text-align: center; font-size: 11px; color: #444; line-height: 1.5;">
+                                <span>[ Netscape 3.0 Verified ]</span><br>
+                                <span>[ Zero Tracking Cookies ]</span><br>
+                                <span>[ HTML 3.2 Standard ]</span>
                             </div>
                         </div>
                     </div>
@@ -537,7 +749,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </h2>
                 <div class="retro-card" style="max-width: 540px;">
                     <p style="font-size: 13px; margin-bottom: 12px;">
-                        Per comunicazioni urgenti, richieste di preventivo o collaborazioni su software web e mobile:
+                        Per comunicazioni, consulenze tecniche su architetture software o collaborazioni:
                     </p>
                     <div style="margin-bottom: 10px;">
                         <label style="display: block; font-size: 12px; font-weight: bold; margin-bottom: 2px;">Indirizzo E-Mail Principale:</label>
@@ -551,7 +763,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <li><a href="https://g.dev/mattiascarpa" target="_blank" style="color: #0000ff;">Google Developer Profile</a></li>
                         </ul>
                     </div>
-                    <div style="background: #e8e8e8; border: 1px solid #999; padding: 10px;">
+                    <div style="background: #e8e8e8; border: 2px inset #999; padding: 12px;">
                         <span style="font-size: 11px; color: #444;">
                             💡 È anche possibile inviare una missiva diretta aprendo il client di posta predefinito cliccando sul link sottostante:
                         </span>
@@ -595,7 +807,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                         ${p.gallery.map(img => `
                             <a href="${fixRetroAsset(img)}" target="_blank" title="Clicca per aprire a dimensione originale">
-                                <img src="${fixRetroAsset(img)}" style="max-height: 100px; max-width: 160px; object-fit: cover; border: 2px inset #808080; background: #fff;" alt="Screenshot">
+                                <img src="${fixRetroAsset(img)}" style="max-height: 105px; max-width: 165px; object-fit: cover; border: 2px inset #808080; background: #fff;" alt="Screenshot">
                             </a>
                         `).join('')}
                     </div>
@@ -636,19 +848,13 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     };
 
-    window.openApp = function(appId) {
-        openWindow(appId);
-    };
-
-    // Tabs click
     netscapeTabs.forEach(tab => {
         tab.addEventListener('click', () => {
             const page = tab.getAttribute('data-page');
-            window.navRetro(page);
+            if (page) window.navRetro(page);
         });
     });
 
-    // Netscape Toolbar buttons
     const btnBack = document.getElementById('netscapeBack');
     const btnFwd = document.getElementById('netscapeForward');
     const btnHome = document.getElementById('netscapeHome');
@@ -673,15 +879,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (btnReload) btnReload.addEventListener('click', () => {
-        const logo = document.querySelector('.netscape-n-logo');
-        if (logo) {
-            logo.style.transform = 'rotate(360deg)';
-            setTimeout(() => { logo.style.transform = ''; }, 600);
-        }
         renderNetscapePage(netscapeHistory[historyIdx]);
     });
 
-    // Initial render Netscape
     renderNetscapePage('home');
 
     // --------------------------------------------------------------------------
@@ -779,6 +979,7 @@ Percorso file: ../assets/CV.pdf
         const term = document.getElementById('dosTerminal');
         if (term) term.scrollTop = term.scrollHeight;
     }
+    window.appendDosOutput = appendDosOutput;
 
     if (dosInput) {
         dosInput.addEventListener('keydown', (e) => {
@@ -803,11 +1004,15 @@ Percorso file: ../assets/CV.pdf
   SKILLS     - Elenca lo stack delle competenze tecniche
   CONTACT    - Mostra le coordinate telematiche
   2026       - Ritorna al portfolio moderno
+  REBOOT     - Riavvia il computer e torna al 2026
   VER        - Mostra la versione del sistema operativo DOS
   CLS        - Pulisce lo schermo del terminale
+  DATE       - Mostra la data di sistema
+  TIME       - Mostra l'ora di sistema
   EXIT       - Chiude la sessione MS-DOS Prompt`);
                         break;
                     case 'dir':
+                        window.playFloppySound();
                         appendDosOutput(` Volume in drive C has no label.
  Volume Serial Number is 1995-2026
  Directory of C:\\MATTIA
@@ -836,10 +1041,12 @@ PROGETTI       <DIR>        04-10-95   1:10p
                         break;
                     case 'projects':
                         appendDosOutput(`Progetti in archivio:
-  1. GESTIONE LAVORI VENEZIA  (iOS Swift, MapKit JS, Supabase)
-  2. GUIDA TURISTICA APP      (Web App offline, Audio, PDF)
-  3. MATRIX VOIP NETWORK      (Docker, PBX, Tailscale, Element)
-  4. VECCHIO PORTFOLIO        (HTML, CSS, JS, Firebase)
+  1. GUIDA TURISTICA APP      (Web App multilingua, Audio, PDF)
+  2. GESTIONE LAVORI VENEZIA  (iOS Swift, MapKit JS, Supabase)
+  3. VECCHIO PORTFOLIO        (HTML, CSS, JS, Firebase)
+  4. MATRIX VOIP NETWORK      (Docker, PBX, Tailscale, Element)
+  5. SITO PERSONALE ALPHA     (React, Tailwind)
+  6. SITO PERSONALE BETA      (Next.js, GSAP)
 Digita 'NETSCAPE' per visualizzare i case study completi con immagini.`);
                         break;
                     case 'skills':
@@ -857,7 +1064,14 @@ Digita 'NETSCAPE' per visualizzare i case study completi con immagini.`);
                     case 'ver':
                         appendDosOutput('MS-DOS Version 6.22 (Windows 95 Shell Emulation)');
                         break;
+                    case 'date':
+                        appendDosOutput(`Data corrente di sistema: ${new Date().toLocaleDateString('it-IT')}`);
+                        break;
+                    case 'time':
+                        appendDosOutput(`Ora corrente di sistema: ${new Date().toLocaleTimeString('it-IT')}`);
+                        break;
                     case 'cls':
+                    case 'clear':
                         if (dosOutput) dosOutput.innerHTML = '';
                         break;
                     case 'exit':
@@ -865,12 +1079,14 @@ Digita 'NETSCAPE' per visualizzare i case study completi con immagini.`);
                         break;
                     case '2026':
                     case 'reboot':
-                        appendDosOutput('Ritorno al portfolio moderno...');
+                        appendDosOutput('Ritorno al portfolio moderno in corso...');
+                        window.playDingSound();
                         setTimeout(() => { window.location.href = '../'; }, 400);
                         break;
                     case '':
                         break;
                     default:
+                        window.playDingSound();
                         appendDosOutput(`Comando o nome file non valido: '${rawCmd}'. Digita 'HELP' per la lista.`);
                         break;
                 }
