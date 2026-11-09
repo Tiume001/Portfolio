@@ -801,6 +801,73 @@ function initScrollAnimations() {
         });
     });
 
+    // Floating 3D Octahedron Beacon animation
+    gsap.to('.octa-scene', { y: '-=14', duration: 3.2, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 0.5 });
+
+    // Interactive Holographic Diamond Beacon 3D Physics
+    document.querySelectorAll('.cta-object').forEach(ctaObj => {
+        const octa = ctaObj.querySelector('.octahedron');
+        const scene = ctaObj.querySelector('.octa-scene');
+        if (!octa || !scene) return;
+
+        const isMobile = () => window.innerWidth < 768;
+        const getBaseZ = () => isMobile() ? 31 : 45;
+        const getMaxAddZ = () => isMobile() ? 32 : 60;
+
+        ctaObj.addEventListener('mouseenter', () => {
+            if (techCursor) techCursor.classList.add('dot-mode');
+            const targetZ = isMobile() ? '55px' : '88px';
+            gsap.to(octa, { '--octa-z': targetZ, duration: 0.6, ease: 'back.out(1.5)', overwrite: 'auto' });
+        });
+
+        ctaObj.addEventListener('mousemove', (e) => {
+            const rect = ctaObj.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const distX = (e.clientX - centerX) / (rect.width / 2);
+            const distY = (e.clientY - centerY) / (rect.height / 2);
+            const distance = Math.min(Math.sqrt(distX * distX + distY * distY), 1);
+
+            const baseZ = getBaseZ();
+            const maxAddZ = getMaxAddZ();
+            const targetZ = baseZ + ((1 - distance) * maxAddZ);
+
+            gsap.to(octa, { '--octa-z': `${targetZ}px`, duration: 0.35, ease: 'power2.out', overwrite: 'auto' });
+            gsap.to(scene, { rotationX: -distY * 22, rotationY: distX * 22, duration: 0.35, ease: 'power2.out', overwrite: 'auto' });
+        });
+
+        ctaObj.addEventListener('mouseleave', () => {
+            if (techCursor) techCursor.classList.remove('dot-mode');
+            const baseZ = `${getBaseZ()}px`;
+            gsap.to(octa, { '--octa-z': baseZ, duration: 0.8, ease: 'power3.out', overwrite: 'auto' });
+            gsap.to(scene, { rotationX: 0, rotationY: 0, duration: 0.8, ease: 'power3.out', overwrite: 'auto' });
+        });
+
+        // Touch support on mobile devices
+        ctaObj.addEventListener('touchstart', () => {
+            const openZ = isMobile() ? '58px' : '90px';
+            gsap.to(octa, { '--octa-z': openZ, duration: 0.5, ease: 'back.out(1.5)', overwrite: 'auto' });
+        }, { passive: true });
+
+        ctaObj.addEventListener('touchend', () => {
+            const baseZ = `${getBaseZ()}px`;
+            gsap.to(octa, { '--octa-z': baseZ, duration: 0.8, ease: 'power3.out', overwrite: 'auto' });
+        }, { passive: true });
+    });
+
+    // CTA Beacon scroll entrance
+    gsap.from('.cta-3d-wrapper', {
+        scale: 0.75,
+        opacity: 0,
+        duration: 1.2,
+        ease: 'power3.out',
+        scrollTrigger: {
+            trigger: '#contact',
+            start: 'top 80%',
+            toggleActions: 'play none none none'
+        }
+    });
+
     // Hero Parallax
     const heroEl = document.querySelector('.hero');
     if (heroEl) {
