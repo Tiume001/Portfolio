@@ -8,12 +8,16 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script>
-    // Immediate Theme Pre-hydration to prevent FOUC
+    // Immediate Theme & Language Pre-hydration to prevent FOUC / layout flash
     (function(){
         try {
             var savedTheme = localStorage.getItem('portfolio_theme');
             if (savedTheme) {
                 document.documentElement.setAttribute('data-theme', savedTheme);
+            }
+            var savedLang = localStorage.getItem('portfolio_lang');
+            if (savedLang) {
+                document.documentElement.setAttribute('lang', savedLang);
             }
         } catch(e) {}
     })();
@@ -53,16 +57,32 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
 
 <!-- Mobile Menu -->
 <div class="mobile-menu" id="mobileMenu">
-    <a href="#about" class="text-text-sec hover:text-text" onclick="closeMobileMenu()">About</a>
-    <a href="#approach" class="text-text-sec hover:text-text" onclick="closeMobileMenu()">Approach</a>
-    <a href="#work" class="text-text-sec hover:text-text" onclick="closeMobileMenu()">Work</a>
-    <a href="#skills" class="text-text-sec hover:text-text" onclick="closeMobileMenu()">Skills</a>
-    <a href="#experience" class="text-text-sec hover:text-text" onclick="closeMobileMenu()">Experience</a>
-    <a href="#contact" class="text-text-sec hover:text-text" onclick="closeMobileMenu()">Contact</a>
+    <a href="#about" class="text-text-sec hover:text-text" onclick="closeMobileMenu()" data-i18n="nav_about">About</a>
+    <a href="#approach" class="text-text-sec hover:text-text" onclick="closeMobileMenu()" data-i18n="nav_approach">Approach</a>
+    <a href="#work" class="text-text-sec hover:text-text" onclick="closeMobileMenu()" data-i18n="nav_work">Work</a>
+    <a href="#skills" class="text-text-sec hover:text-text" onclick="closeMobileMenu()" data-i18n="nav_skills">Skills</a>
+    <a href="#experience" class="text-text-sec hover:text-text" onclick="closeMobileMenu()" data-i18n="nav_experience">Experience</a>
+    <a href="#contact" class="text-text-sec hover:text-text" onclick="closeMobileMenu()" data-i18n="nav_contact">Contact</a>
     
-    <!-- Mobile Theme Selector -->
+    <!-- Mobile Language Selector -->
     <div class="mt-4 pt-4 border-t border-white/10 flex flex-col items-center gap-3">
-        <span class="text-[10px] uppercase tracking-[0.2em] text-text-ter">Tonalità di Colore</span>
+        <span class="text-[10px] uppercase tracking-[0.2em] text-text-ter" data-i18n="mobile_lang_title">Lingua</span>
+        <div class="flex items-center gap-2">
+            <button class="mobile-lang-btn px-3 py-1.5 rounded-full border border-white/20 bg-white/5 text-xs font-medium text-text flex items-center gap-1.5 hoverable active" data-lang="it" onclick="setLanguage('it'); closeMobileMenu();">
+                <span>🇮🇹</span><span>IT</span>
+            </button>
+            <button class="mobile-lang-btn px-3 py-1.5 rounded-full border border-white/20 bg-white/5 text-xs font-medium text-text-sec flex items-center gap-1.5 hoverable" data-lang="en" onclick="setLanguage('en'); closeMobileMenu();">
+                <span>🇬🇧</span><span>EN</span>
+            </button>
+            <button class="mobile-lang-btn px-3 py-1.5 rounded-full border border-white/20 bg-white/5 text-xs font-medium text-text-sec flex items-center gap-1.5 hoverable" data-lang="es" onclick="setLanguage('es'); closeMobileMenu();">
+                <span>🇪🇸</span><span>ES</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Theme Selector -->
+    <div class="mt-2 pt-3 border-t border-white/10 flex flex-col items-center gap-3">
+        <span class="text-[10px] uppercase tracking-[0.2em] text-text-ter" data-i18n="mobile_theme_title">Tonalità di Colore</span>
         <div class="flex items-center gap-3 flex-wrap justify-center">
             <button class="w-7 h-7 rounded-full border border-white/30 bg-[#f5f5f5]" title="Obsidian" onclick="setTheme('monochrome'); closeMobileMenu();"></button>
             <button class="w-7 h-7 rounded-full border border-white/30 bg-[#00ffaa]" title="Emerald" onclick="setTheme('emerald'); closeMobileMenu();"></button>
@@ -98,22 +118,22 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
         <div class="px-6 md:px-10 lg:px-16 py-16 md:py-24 max-w-6xl mx-auto">
             <div class="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8">
                 <div class="md:col-span-8">
-                    <h3 class="font-display font-bold text-2xl md:text-3xl mb-6">Il Progetto</h3>
+                    <h3 class="font-display font-bold text-2xl md:text-3xl mb-6" data-i18n="modal_project_title">Il Progetto</h3>
                     <div id="overlayDesc" class="text-text-sec text-base md:text-lg leading-relaxed space-y-6"></div>
                 </div>
                 <div class="md:col-span-4 flex flex-col gap-8">
                     <div>
-                        <span class="text-[10px] uppercase tracking-[0.2em] text-text-ter block mb-2">Ruolo</span>
+                        <span class="text-[10px] uppercase tracking-[0.2em] text-text-ter block mb-2" data-i18n="modal_role">Ruolo</span>
                         <p id="overlayRole" class="text-text"></p>
                     </div>
                     <div>
-                        <span class="text-[10px] uppercase tracking-[0.2em] text-text-ter block mb-2">Anno</span>
+                        <span class="text-[10px] uppercase tracking-[0.2em] text-text-ter block mb-2" data-i18n="modal_year">Anno</span>
                         <p id="overlayYear" class="text-text"></p>
                     </div>
                     <div id="overlayLinkContainer">
-                        <span class="text-[10px] uppercase tracking-[0.2em] text-text-ter block mb-2">Link</span>
+                        <span class="text-[10px] uppercase tracking-[0.2em] text-text-ter block mb-2" data-i18n="modal_link">Link</span>
                         <a id="overlayLink" href="#" target="_blank" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-black font-medium text-xs tracking-wider uppercase hover:bg-white/90 transition-all shadow-lg hoverable">
-                            <span>Visita il sito live</span>
+                            <span data-i18n="modal_visit">Visita il sito live</span>
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
                         </a>
                     </div>
@@ -121,7 +141,7 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
             </div>
             
             <div id="gallerySection" class="mt-20 md:mt-32">
-                <h3 class="font-display font-bold text-2xl md:text-3xl mb-8">Galleria</h3>
+                <h3 class="font-display font-bold text-2xl md:text-3xl mb-8" data-i18n="modal_gallery">Galleria</h3>
                 <div id="overlayGallery" class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <!-- Gallery images injected via JS -->
                 </div>
@@ -143,23 +163,56 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
     </div>
     
     <div class="hidden md:flex items-center gap-8 lg:gap-10">
-        <a href="#about" class="nav-link text-[12px] text-text-sec hover:text-text transition-colors duration-300 tracking-widest uppercase hoverable">About</a>
-        <a href="#work" class="nav-link text-[12px] text-text-sec hover:text-text transition-colors duration-300 tracking-widest uppercase hoverable">Work</a>
-        <a href="#skills" class="nav-link text-[12px] text-text-sec hover:text-text transition-colors duration-300 tracking-widest uppercase hoverable">Skills</a>
-        <a href="#experience" class="nav-link text-[12px] text-text-sec hover:text-text transition-colors duration-300 tracking-widest uppercase hoverable">Experience</a>
-        <a href="#contact" class="nav-link text-[12px] text-text-sec hover:text-text transition-colors duration-300 tracking-widest uppercase hoverable">Contact</a>
+        <a href="#about" class="nav-link text-[12px] text-text-sec hover:text-text transition-colors duration-300 tracking-widest uppercase hoverable" data-i18n="nav_about">About</a>
+        <a href="#work" class="nav-link text-[12px] text-text-sec hover:text-text transition-colors duration-300 tracking-widest uppercase hoverable" data-i18n="nav_work">Work</a>
+        <a href="#skills" class="nav-link text-[12px] text-text-sec hover:text-text transition-colors duration-300 tracking-widest uppercase hoverable" data-i18n="nav_skills">Skills</a>
+        <a href="#experience" class="nav-link text-[12px] text-text-sec hover:text-text transition-colors duration-300 tracking-widest uppercase hoverable" data-i18n="nav_experience">Experience</a>
+        <a href="#contact" class="nav-link text-[12px] text-text-sec hover:text-text transition-colors duration-300 tracking-widest uppercase hoverable" data-i18n="nav_contact">Contact</a>
     </div>
 
-    <div class="flex items-center gap-3">
+    <div class="flex items-center gap-2.5 md:gap-3">
+        <!-- Language Switcher -->
+        <div class="lang-switcher-wrapper">
+            <button id="langToggleBtn" class="lang-switcher-btn hoverable" aria-label="Seleziona lingua" aria-expanded="false">
+                <span class="lang-flag" id="langActiveFlag">🇮🇹</span>
+                <span id="langBtnText">IT</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div id="langMenu" class="lang-menu">
+                <div class="lang-menu-header" data-i18n="lang_select_title">Seleziona Lingua</div>
+                <button class="lang-option active" data-lang="it">
+                    <div class="lang-option-left">
+                        <span class="lang-flag">🇮🇹</span>
+                        <span>Italiano</span>
+                    </div>
+                    <span class="lang-check">✓</span>
+                </button>
+                <button class="lang-option" data-lang="en">
+                    <div class="lang-option-left">
+                        <span class="lang-flag">🇬🇧</span>
+                        <span>English</span>
+                    </div>
+                    <span class="lang-check">✓</span>
+                </button>
+                <button class="lang-option" data-lang="es">
+                    <div class="lang-option-left">
+                        <span class="lang-flag">🇪🇸</span>
+                        <span>Español</span>
+                    </div>
+                    <span class="lang-check">✓</span>
+                </button>
+            </div>
+        </div>
+
         <!-- Theme Switcher -->
         <div class="theme-switcher-wrapper">
             <button id="themeToggleBtn" class="theme-switcher-btn hoverable" aria-label="Scegli tonalità del tema" aria-expanded="false">
                 <span class="theme-active-indicator" id="themeActiveIndicator"></span>
-                <span id="themeBtnText">Palette</span>
+                <span id="themeBtnText" data-i18n="theme_btn_text">Palette</span>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div id="themeMenu" class="theme-menu">
-                <div class="theme-menu-header">Tonalità di Colore</div>
+                <div class="theme-menu-header" data-i18n="theme_menu_header">Tonalità di Colore</div>
                 <button class="theme-option active" data-theme="monochrome">
                     <div class="theme-option-left">
                         <span class="theme-swatch" style="background: #f5f5f5; box-shadow: 0 0 6px rgba(255,255,255,0.5);"></span>
@@ -217,7 +270,7 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
     <div class="hero-content relative z-10 w-full md:w-[62%] lg:w-[60%] max-w-full">
         <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/[0.03] backdrop-blur-md text-[10px] tracking-widest uppercase text-text-sec mb-5">
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>Full-Stack & IT Systems Specialist • Venice, IT</span>
+            <span data-i18n="hero_badge">Full-Stack & IT Systems Specialist • Venice, IT</span>
         </div>
         <div class="overflow-hidden mb-0.5 md:mb-1">
             <div class="hero-line font-display font-extrabold text-[13vw] md:text-[8.5vw] lg:text-[7vw] xl:text-[6.8vw] leading-[0.85] tracking-[-0.04em]">MATTIA</div>
@@ -228,7 +281,7 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
         <div class="hero-role text-text-sec text-[11px] md:text-xs tracking-[0.2em] uppercase mt-4 md:mt-6 opacity-0 h-5">
             <span id="roleText"></span><span class="type-cursor"></span>
         </div>
-        <div class="hero-subtitle mt-6 md:mt-8 text-text-ter text-[10px] md:text-[11px] tracking-[0.25em] uppercase opacity-0">
+        <div class="hero-subtitle mt-6 md:mt-8 text-text-ter text-[10px] md:text-[11px] tracking-[0.25em] uppercase opacity-0" data-i18n="hero_subtitle" data-i18n-html="true">
             Developer &bull; Creative Technologist &bull; Based in Venice, Italy
         </div>
     </div>
@@ -248,7 +301,7 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
         </div>
     </div>
     <div class="hero-scroll absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 opacity-0">
-        <span class="text-[8px] uppercase tracking-[0.4em] text-text-ter">Scroll</span>
+        <span class="text-[8px] uppercase tracking-[0.4em] text-text-ter" data-i18n="hero_scroll">Scroll</span>
         <div class="w-[1px] h-8 bg-text-ter relative overflow-hidden rounded-full">
             <div class="w-full h-1/2 bg-text scroll-line-inner"></div>
         </div>
@@ -305,22 +358,22 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
 <section id="about" class="py-20 md:py-32 px-6 md:px-10 lg:px-16">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-6">
         <div class="lg:col-span-7">
-            <span class="text-[10px] uppercase tracking-[0.3em] text-text-ter block mb-6">( About )</span>
+            <span class="text-[10px] uppercase tracking-[0.3em] text-text-ter block mb-6" data-i18n="about_label">( About )</span>
             <p class="text-lg md:text-xl lg:text-[1.65rem] leading-[1.45] tracking-tight text-text-sec">
-                <span class="reveal-line"><span class="reveal-line-inner">I build websites and applications that sit at the</span></span>
-                <span class="reveal-line"><span class="reveal-line-inner">intersection of clean engineering and thoughtful design.</span></span>
-                <span class="reveal-line"><span class="reveal-line-inner">With 5+ years of experience, my focus goes</span></span>
-                <span class="reveal-line"><span class="reveal-line-inner">beyond writing code: I guide clients from concept</span></span>
-                <span class="reveal-line"><span class="reveal-line-inner">to launch and oversee the entire operational and</span></span>
-                <span class="reveal-line"><span class="reveal-line-inner">managerial side of the IT department, delivering</span></span>
-                <span class="reveal-line"><span class="reveal-line-inner">comprehensive, end-to-end digital solutions.</span></span>
+                <span class="reveal-line"><span class="reveal-line-inner" data-i18n="about_line_1">I build websites and applications that sit at the</span></span>
+                <span class="reveal-line"><span class="reveal-line-inner" data-i18n="about_line_2">intersection of clean engineering and thoughtful design.</span></span>
+                <span class="reveal-line"><span class="reveal-line-inner" data-i18n="about_line_3">With 5+ years of experience, my focus goes</span></span>
+                <span class="reveal-line"><span class="reveal-line-inner" data-i18n="about_line_4">beyond writing code: I guide clients from concept</span></span>
+                <span class="reveal-line"><span class="reveal-line-inner" data-i18n="about_line_5">to launch and oversee the entire operational and</span></span>
+                <span class="reveal-line"><span class="reveal-line-inner" data-i18n="about_line_6">managerial side of the IT department, delivering</span></span>
+                <span class="reveal-line"><span class="reveal-line-inner" data-i18n="about_line_7">comprehensive, end-to-end digital solutions.</span></span>
             </p>
             <div class="h-line mt-12 md:mt-16"><div class="h-line-fill" id="aboutLine"></div></div>
         </div>
         <div class="lg:col-span-4 lg:col-start-9 flex flex-col justify-end gap-8 md:gap-10 pt-8 lg:pt-0">
-            <div class="stat-item" data-target="5"><div class="stat-num text-text-sec">0</div><div class="text-[10px] uppercase tracking-[0.2em] text-text-ter mt-1.5">Years Experience</div></div>
-            <div class="stat-item" data-target="40"><div class="stat-num text-text-sec">0</div><div class="text-[10px] uppercase tracking-[0.2em] text-text-ter mt-1.5">Projects Shipped</div></div>
-            <div class="stat-item" data-target="15"><div class="stat-num text-text-sec">0</div><div class="text-[10px] uppercase tracking-[0.2em] text-text-ter mt-1.5">Tech Stack</div></div>
+            <div class="stat-item" data-target="5"><div class="stat-num text-text-sec">0</div><div class="text-[10px] uppercase tracking-[0.2em] text-text-ter mt-1.5" data-i18n="stat_years">Years Experience</div></div>
+            <div class="stat-item" data-target="40"><div class="stat-num text-text-sec">0</div><div class="text-[10px] uppercase tracking-[0.2em] text-text-ter mt-1.5" data-i18n="stat_projects">Projects Shipped</div></div>
+            <div class="stat-item" data-target="15"><div class="stat-num text-text-sec">0</div><div class="text-[10px] uppercase tracking-[0.2em] text-text-ter mt-1.5" data-i18n="stat_tech">Tech Stack</div></div>
         </div>
     </div>
 </section>
@@ -331,25 +384,25 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
         <div class="approach-sticky sticky top-0 h-[100dvh] flex items-center px-6 md:px-10 lg:px-16 overflow-hidden">
             <div class="w-full grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-12 items-center">
                 <div class="md:col-span-4 relative">
-                    <span class="text-[10px] uppercase tracking-[0.3em] text-text-ter block mb-6">( How I Work )</span>
+                    <span class="text-[10px] uppercase tracking-[0.3em] text-text-ter block mb-6" data-i18n="approach_label">( How I Work )</span>
                     <div class="step-number" id="stepNumber">01</div>
                 </div>
                 <div class="md:col-span-7 md:col-start-6 relative" style="min-height:180px">
                     <div class="approach-step">
-                        <h3 class="font-display font-bold text-xl md:text-3xl lg:text-4xl tracking-tight mb-3 md:mb-4">Understand</h3>
-                        <p class="text-text-sec text-sm md:text-base lg:text-lg leading-relaxed max-w-lg">Every great product starts with deep understanding. I dive into requirements, user needs, and technical constraints to map the optimal path forward.</p>
+                        <h3 class="font-display font-bold text-xl md:text-3xl lg:text-4xl tracking-tight mb-3 md:mb-4" data-i18n="approach_s1_title">Understand</h3>
+                        <p class="text-text-sec text-sm md:text-base lg:text-lg leading-relaxed max-w-lg" data-i18n="approach_s1_desc">Every great product starts with deep understanding. I dive into requirements, user needs, and technical constraints to map the optimal path forward.</p>
                     </div>
                     <div class="approach-step">
-                        <h3 class="font-display font-bold text-xl md:text-3xl lg:text-4xl tracking-tight mb-3 md:mb-4">Architect</h3>
-                        <p class="text-text-sec text-sm md:text-base lg:text-lg leading-relaxed max-w-lg">Clean architecture is the foundation of scalable software. I design systems that are maintainable, testable, and built to evolve with your product.</p>
+                        <h3 class="font-display font-bold text-xl md:text-3xl lg:text-4xl tracking-tight mb-3 md:mb-4" data-i18n="approach_s2_title">Architect</h3>
+                        <p class="text-text-sec text-sm md:text-base lg:text-lg leading-relaxed max-w-lg" data-i18n="approach_s2_desc">Clean architecture is the foundation of scalable software. I design systems that are maintainable, testable, and built to evolve with your product.</p>
                     </div>
                     <div class="approach-step">
-                        <h3 class="font-display font-bold text-xl md:text-3xl lg:text-4xl tracking-tight mb-3 md:mb-4">Build</h3>
-                        <p class="text-text-sec text-sm md:text-base lg:text-lg leading-relaxed max-w-lg">Writing code is craftsmanship. Every line is intentional — performant, accessible, and maintainable. I build with modern tools and proven patterns.</p>
+                        <h3 class="font-display font-bold text-xl md:text-3xl lg:text-4xl tracking-tight mb-3 md:mb-4" data-i18n="approach_s3_title">Build</h3>
+                        <p class="text-text-sec text-sm md:text-base lg:text-lg leading-relaxed max-w-lg" data-i18n="approach_s3_desc">Writing code is craftsmanship. Every line is intentional — performant, accessible, and maintainable. I build with modern tools and proven patterns.</p>
                     </div>
                     <div class="approach-step">
-                        <h3 class="font-display font-bold text-xl md:text-3xl lg:text-4xl tracking-tight mb-3 md:mb-4">Refine</h3>
-                        <p class="text-text-sec text-sm md:text-base lg:text-lg leading-relaxed max-w-lg">The last 10% makes all the difference. I optimize performance, polish interactions, and ensure every detail meets the highest standard before delivery.</p>
+                        <h3 class="font-display font-bold text-xl md:text-3xl lg:text-4xl tracking-tight mb-3 md:mb-4" data-i18n="approach_s4_title">Refine</h3>
+                        <p class="text-text-sec text-sm md:text-base lg:text-lg leading-relaxed max-w-lg" data-i18n="approach_s4_desc">The last 10% makes all the difference. I optimize performance, polish interactions, and ensure every detail meets the highest standard before delivery.</p>
                     </div>
                 </div>
             </div>
@@ -362,19 +415,19 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
     <div class="work-section pb-6 md:pb-10 pt-10 md:pt-16">
     <div class="px-6 md:px-10 lg:px-16 mb-8 md:mb-14 flex items-end justify-between flex-wrap gap-4">
         <div>
-            <span class="text-[10px] uppercase tracking-[0.3em] text-text-ter block mb-3">( Selected Work )</span>
-            <h2 class="font-display font-extrabold text-2xl md:text-4xl lg:text-5xl tracking-tight reveal-line"><span class="reveal-line-inner">Featured Projects</span></h2>
+            <span class="text-[10px] uppercase tracking-[0.3em] text-text-ter block mb-3" data-i18n="work_label">( Selected Work )</span>
+            <h2 class="font-display font-extrabold text-2xl md:text-4xl lg:text-5xl tracking-tight reveal-line"><span class="reveal-line-inner" data-i18n="work_title">Featured Projects</span></h2>
         </div>
         <div class="flex items-center gap-4">
             <button id="toggleProjectsBtn" class="group inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/15 bg-white/[0.03] hover:bg-white/10 text-text-sec hover:text-white text-xs tracking-wider uppercase transition-all duration-300 hoverable">
-                <span id="toggleProjectsText">Mostra tutti (6)</span>
+                <span id="toggleProjectsText" data-i18n="work_toggle_all">Mostra tutti (6)</span>
                 <svg id="toggleProjectsIcon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform duration-300"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <span class="hidden md:block text-[10px] uppercase tracking-[0.2em] text-text-ter">2021 — 2026</span>
         </div>
     </div>
     <div class="work-track pl-6 md:pl-10 lg:pl-16 pr-6 md:pr-10 lg:pr-16">
-        <div class="work-card hoverable">
+        <div class="work-card hoverable" data-project-id="tour-guide">
             <img src="assets/projects/tour-guide/cover.png" alt="Guida Turistica App">
             <span class="work-card-cat">Web / Presentazione</span>
             <a href="https://veniceguide.github.io" target="_blank" class="work-card-external-link hoverable" onclick="event.stopPropagation();" title="Visita il sito live">
@@ -387,7 +440,7 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                 <div class="work-card-tags"><span class="work-card-tag">HTML</span><span class="work-card-tag">CSS</span><span class="work-card-tag">JavaScript</span></div>
             </div>
         </div>
-        <div class="work-card hoverable">
+        <div class="work-card hoverable" data-project-id="venezia-app">
             <img src="assets/projects/venezia-app/newCover.png" alt="Gestione Lavori Venezia">
             <span class="work-card-cat">iOS / Web App</span>
             <div class="work-card-overlay"></div>
@@ -397,7 +450,7 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                 <div class="work-card-tags"><span class="work-card-tag">Swift</span><span class="work-card-tag">MapKit JS</span><span class="work-card-tag">Supabase</span><span class="work-card-tag">iOS</span></div>
             </div>
         </div>
-        <div class="work-card work-card-extra hoverable">
+        <div class="work-card work-card-extra hoverable" data-project-id="old-portfolio">
             <img src="assets/projects/old-portfolio/card-cover.png" alt="Vecchio Portfolio">
             <span class="work-card-cat">Web / Portfolio</span>
             <a href="https://webauth-38128.web.app" target="_blank" class="work-card-external-link hoverable" onclick="event.stopPropagation();" title="Visita il sito live">
@@ -410,7 +463,7 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                 <div class="work-card-tags"><span class="work-card-tag">HTML</span><span class="work-card-tag">CSS</span><span class="work-card-tag">JS</span></div>
             </div>
         </div>
-        <div class="work-card work-card-extra hoverable">
+        <div class="work-card work-card-extra hoverable" data-project-id="matrix-voip">
             <img src="assets/projects/matrix-voip/cover.png" alt="Matrix VoIP Network">
             <span class="work-card-cat">DevOps / Networking</span>
             <div class="work-card-overlay"></div>
@@ -420,7 +473,7 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                 <div class="work-card-tags"><span class="work-card-tag">Docker</span><span class="work-card-tag">Matrix</span><span class="work-card-tag">Tailscale</span><span class="work-card-tag">Element</span></div>
             </div>
         </div>
-        <div class="work-card work-card-extra hoverable">
+        <div class="work-card work-card-extra hoverable" data-project-id="personal-alpha">
             <img src="project_placeholder.png" alt="Progetto Personale 1">
             <span class="work-card-cat">Web / Personale</span>
             <div class="work-card-overlay"></div>
@@ -430,7 +483,7 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                 <div class="work-card-tags"><span class="work-card-tag">React</span><span class="work-card-tag">Tailwind</span></div>
             </div>
         </div>
-        <div class="work-card work-card-extra hoverable">
+        <div class="work-card work-card-extra hoverable" data-project-id="personal-beta">
             <img src="project_placeholder.png" alt="Progetto Personale 2">
             <span class="work-card-cat">Web / Personale</span>
             <div class="work-card-overlay"></div>
@@ -448,8 +501,8 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
 <!-- Skills -->
 <section id="skills" class="pt-20 md:pt-32 pb-10 md:pb-14 px-6 md:px-10 lg:px-16">
     <div class="mb-12 md:mb-16">
-        <span class="text-[10px] uppercase tracking-[0.3em] text-text-ter block mb-3">( Tech Stack )</span>
-        <h2 class="font-display font-extrabold text-2xl md:text-4xl lg:text-5xl tracking-tight reveal-line"><span class="reveal-line-inner">Skills & Tools</span></h2>
+        <span class="text-[10px] uppercase tracking-[0.3em] text-text-ter block mb-3" data-i18n="skills_label">( Tech Stack )</span>
+        <h2 class="font-display font-extrabold text-2xl md:text-4xl lg:text-5xl tracking-tight reveal-line"><span class="reveal-line-inner" data-i18n="skills_title">Skills & Tools</span></h2>
     </div>
     <div class="max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-7">
         <!-- Bento Card 1: Frontend & Mobile Architecture -->
@@ -461,8 +514,8 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
                         </div>
                         <div>
-                            <h3 class="font-display font-bold text-base md:text-lg text-text tracking-tight">Frontend & Mobile</h3>
-                            <span class="text-[10px] text-text-ter uppercase tracking-widest">Client-Side Engineering</span>
+                            <h3 class="font-display font-bold text-base md:text-lg text-text tracking-tight" data-i18n="skills_bento1_title">Frontend & Mobile</h3>
+                            <span class="text-[10px] text-text-ter uppercase tracking-widest" data-i18n="skills_bento1_sub">Client-Side Engineering</span>
                         </div>
                     </div>
                     <span class="text-[10px] font-mono text-emerald-400/80 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">3 Core Areas</span>
@@ -475,7 +528,7 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                             <h4 class="text-sm font-semibold text-text tracking-tight group-hover:text-emerald-300 transition-colors">React & Next.js Ecosystem</h4>
                             <span class="text-[9px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-white/5 border border-white/10 text-text-sec">Core Stack</span>
                         </div>
-                        <p class="text-xs text-text-sec/80 leading-relaxed">Sviluppo di SPA/SSR ad alte prestazioni, App Router, State Management reattivo e ottimizzazione Core Web Vitals.</p>
+                        <p class="text-xs text-text-sec/80 leading-relaxed" data-i18n="skills_bento1_react_desc">Sviluppo di SPA/SSR ad alte prestazioni, App Router, State Management reattivo e ottimizzazione Core Web Vitals.</p>
                         <div class="flex flex-wrap gap-1.5 mt-2.5">
                             <span class="skill-pill">React 18/19</span>
                             <span class="skill-pill">Next.js</span>
@@ -494,7 +547,7 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                             <h4 class="text-sm font-semibold text-text tracking-tight group-hover:text-emerald-300 transition-colors">Swift & MapKit JS</h4>
                             <span class="text-[9px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-white/5 border border-white/10 text-text-sec">Specialized</span>
                         </div>
-                        <p class="text-xs text-text-sec/80 leading-relaxed">Sviluppo iOS nativo, gestione mappe geospaziali complesse con viste vettoriali/satellitari e scansione biometrica (Face ID).</p>
+                        <p class="text-xs text-text-sec/80 leading-relaxed" data-i18n="skills_bento1_swift_desc">Sviluppo iOS nativo, gestione mappe geospaziali complesse con viste vettoriali/satellitari e scansione biometrica (Face ID).</p>
                         <div class="flex flex-wrap gap-1.5 mt-2.5">
                             <span class="skill-pill">Swift</span>
                             <span class="skill-pill">MapKit JS</span>
@@ -513,7 +566,7 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                             <h4 class="text-sm font-semibold text-text tracking-tight group-hover:text-emerald-300 transition-colors">Modern UI & Motion Design</h4>
                             <span class="text-[9px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-white/5 border border-white/10 text-text-sec">Production</span>
                         </div>
-                        <p class="text-xs text-text-sec/80 leading-relaxed">Design system atomici, CSS performante zero-runtime, micro-animazioni fluide a 60fps con GSAP e accessibilità.</p>
+                        <p class="text-xs text-text-sec/80 leading-relaxed" data-i18n="skills_bento1_ui_desc">Design system atomici, CSS performante zero-runtime, micro-animazioni fluide a 60fps con GSAP e accessibilità.</p>
                         <div class="flex flex-wrap gap-1.5 mt-2.5">
                             <span class="skill-pill">Tailwind CSS</span>
                             <span class="skill-pill">GSAP Motion</span>
@@ -535,8 +588,8 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
                         </div>
                         <div>
-                            <h3 class="font-display font-bold text-base md:text-lg text-text tracking-tight">Backend & Data</h3>
-                            <span class="text-[10px] text-text-ter uppercase tracking-widest">Storage, API & Cloud BaaS</span>
+                            <h3 class="font-display font-bold text-base md:text-lg text-text tracking-tight" data-i18n="skills_bento2_title">Backend & Data</h3>
+                            <span class="text-[10px] text-text-ter uppercase tracking-widest" data-i18n="skills_bento2_sub">Storage, API & Cloud BaaS</span>
                         </div>
                     </div>
                     <span class="text-[10px] font-mono text-cyan-400/80 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20">3 Core Areas</span>
@@ -549,7 +602,7 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                             <h4 class="text-sm font-semibold text-text tracking-tight group-hover:text-cyan-300 transition-colors">Supabase & PostgreSQL</h4>
                             <span class="text-[9px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-white/5 border border-white/10 text-text-sec">Core Backend</span>
                         </div>
-                        <p class="text-xs text-text-sec/80 leading-relaxed">Modellazione schemi relazionali, politiche di sicurezza Row-Level Security (RLS), trigger e sincronizzazione real-time.</p>
+                        <p class="text-xs text-text-sec/80 leading-relaxed" data-i18n="skills_bento2_supa_desc">Modellazione schemi relazionali, politiche di sicurezza Row-Level Security (RLS), trigger e sincronizzazione real-time.</p>
                         <div class="flex flex-wrap gap-1.5 mt-2.5">
                             <span class="skill-pill">PostgreSQL</span>
                             <span class="skill-pill">Supabase BaaS</span>
@@ -568,7 +621,7 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                             <h4 class="text-sm font-semibold text-text tracking-tight group-hover:text-cyan-300 transition-colors">Node.js & Python / FastAPI</h4>
                             <span class="text-[9px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-white/5 border border-white/10 text-text-sec">Advanced</span>
                         </div>
-                        <p class="text-xs text-text-sec/80 leading-relaxed">Microservizi asincroni, REST API e automazione di parser per importazione e geocodifica di dataset complessi (Excel/JSON).</p>
+                        <p class="text-xs text-text-sec/80 leading-relaxed" data-i18n="skills_bento2_node_desc">Microservizi asincroni, REST API e automazione di parser per importazione e geocodifica di dataset complessi (Excel/JSON).</p>
                         <div class="flex flex-wrap gap-1.5 mt-2.5">
                             <span class="skill-pill">Node.js</span>
                             <span class="skill-pill">Express</span>
@@ -587,7 +640,7 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                             <h4 class="text-sm font-semibold text-text tracking-tight group-hover:text-cyan-300 transition-colors">PHP & Laravel Ecosystem</h4>
                             <span class="text-[9px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-white/5 border border-white/10 text-text-sec">Foundation</span>
                         </div>
-                        <p class="text-xs text-text-sec/80 leading-relaxed">Architettura MVC, gestione middleware, routing avanzato e persistenza con Eloquent ORM.</p>
+                        <p class="text-xs text-text-sec/80 leading-relaxed" data-i18n="skills_bento2_php_desc">Architettura MVC, gestione middleware, routing avanzato e persistenza con Eloquent ORM.</p>
                         <div class="flex flex-wrap gap-1.5 mt-2.5">
                             <span class="skill-pill">PHP</span>
                             <span class="skill-pill">Laravel MVC</span>
@@ -608,8 +661,8 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
                         </div>
                         <div>
-                            <h3 class="font-display font-bold text-base md:text-lg text-text tracking-tight">Enterprise IT & Virtualization</h3>
-                            <span class="text-[10px] text-text-ter uppercase tracking-widest">Infrastructure & Security</span>
+                            <h3 class="font-display font-bold text-base md:text-lg text-text tracking-tight" data-i18n="skills_bento3_title">Enterprise IT & Virtualization</h3>
+                            <span class="text-[10px] text-text-ter uppercase tracking-widest" data-i18n="skills_bento3_sub">Infrastructure & Security</span>
                         </div>
                     </div>
                     <span class="text-[10px] font-mono text-purple-400/80 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20">2 Platforms</span>
@@ -622,7 +675,7 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                             <h4 class="text-sm font-semibold text-text tracking-tight group-hover:text-purple-300 transition-colors">VMware ESXi & vSphere</h4>
                             <span class="text-[9px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-white/5 border border-white/10 text-text-sec">Enterprise</span>
                         </div>
-                        <p class="text-xs text-text-sec/80 leading-relaxed">Deploy e gestione hypervisor bare-metal, configurazione VM, isolamento reti vSwitch e piani di continuità operativa.</p>
+                        <p class="text-xs text-text-sec/80 leading-relaxed" data-i18n="skills_bento3_vmware_desc">Deploy e gestione hypervisor bare-metal, configurazione VM, isolamento reti vSwitch e piani di continuità operativa.</p>
                         <div class="flex flex-wrap gap-1.5 mt-2.5">
                             <span class="skill-pill">ESXi Hypervisor</span>
                             <span class="skill-pill">vSphere Client</span>
@@ -641,7 +694,7 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                             <h4 class="text-sm font-semibold text-text tracking-tight group-hover:text-purple-300 transition-colors">Libraesva ESG & MailStore</h4>
                             <span class="text-[9px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-white/5 border border-white/10 text-text-sec">Security</span>
                         </div>
-                        <p class="text-xs text-text-sec/80 leading-relaxed">Protezione perimetrale della posta (anti-phishing, spoofing, policy SPF/DKIM/DMARC) e archiviazione forense a norma.</p>
+                        <p class="text-xs text-text-sec/80 leading-relaxed" data-i18n="skills_bento3_mail_desc">Protezione perimetrale della posta (anti-phishing, spoofing, policy SPF/DKIM/DMARC) e archiviazione forense a norma.</p>
                         <div class="flex flex-wrap gap-1.5 mt-2.5">
                             <span class="skill-pill">Libraesva ESG</span>
                             <span class="skill-pill">MailStore Server</span>
@@ -666,8 +719,8 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
                         </div>
                         <div>
-                            <h3 class="font-display font-bold text-base md:text-lg text-text tracking-tight">DevOps, Mesh & AI</h3>
-                            <span class="text-[10px] text-text-ter uppercase tracking-widest">Containers, Networking & Tools</span>
+                            <h3 class="font-display font-bold text-base md:text-lg text-text tracking-tight" data-i18n="skills_bento4_title">DevOps, Mesh & AI</h3>
+                            <span class="text-[10px] text-text-ter uppercase tracking-widest" data-i18n="skills_bento4_sub">Containers, Networking & Tools</span>
                         </div>
                     </div>
                     <span class="text-[10px] font-mono text-amber-400/80 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">3 Core Areas</span>
@@ -680,7 +733,7 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                             <h4 class="text-sm font-semibold text-text tracking-tight group-hover:text-amber-300 transition-colors">Docker & Containerization</h4>
                             <span class="text-[9px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-white/5 border border-white/10 text-text-sec">Production</span>
                         </div>
-                        <p class="text-xs text-text-sec/80 leading-relaxed">Scrittura Dockerfile e configurazioni multi-container per isolare nodi applicativi, PBX VoIP e deploy automatizzato tramite script.</p>
+                        <p class="text-xs text-text-sec/80 leading-relaxed" data-i18n="skills_bento4_docker_desc">Scrittura Dockerfile e configurazioni multi-container per isolare nodi applicativi, PBX VoIP e deploy automatizzato tramite script.</p>
                         <div class="flex flex-wrap gap-1.5 mt-2.5">
                             <span class="skill-pill">Docker Compose</span>
                             <span class="skill-pill">Container Isolation</span>
@@ -698,7 +751,7 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                             <h4 class="text-sm font-semibold text-text tracking-tight group-hover:text-amber-300 transition-colors">Tailscale & Mesh Networking</h4>
                             <span class="text-[9px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-white/5 border border-white/10 text-text-sec">Specialized</span>
                         </div>
-                        <p class="text-xs text-text-sec/80 leading-relaxed">Reti private cifrate point-to-point (WireGuard), tunneling zero-trust e routing sicuro senza porte pubbliche esposte.</p>
+                        <p class="text-xs text-text-sec/80 leading-relaxed" data-i18n="skills_bento4_tail_desc">Reti private cifrate point-to-point (WireGuard), tunneling zero-trust e routing sicuro senza porte pubbliche esposte.</p>
                         <div class="flex flex-wrap gap-1.5 mt-2.5">
                             <span class="skill-pill">Tailscale / WireGuard</span>
                             <span class="skill-pill">Zero-Trust Mesh</span>
@@ -716,7 +769,7 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                             <h4 class="text-sm font-semibold text-text tracking-tight group-hover:text-amber-300 transition-colors">AI Engineering & Modern Workflow</h4>
                             <span class="text-[9px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-white/5 border border-white/10 text-text-sec">Workflow</span>
                         </div>
-                        <p class="text-xs text-text-sec/80 leading-relaxed">Integrazione modelli LLM (Anthropic Claude API), prompt engineering avanzato, Git/GitHub CI-CD e prototipazione UI/UX.</p>
+                        <p class="text-xs text-text-sec/80 leading-relaxed" data-i18n="skills_bento4_ai_desc">Integrazione modelli LLM (Anthropic Claude API), prompt engineering avanzato, Git/GitHub CI-CD e prototipazione UI/UX.</p>
                         <div class="flex flex-wrap gap-1.5 mt-2.5">
                             <span class="skill-pill">Anthropic Claude API</span>
                             <span class="skill-pill">Prompt Engineering</span>
@@ -736,10 +789,10 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
     <div class="mt-12 md:mt-16 pt-8 md:pt-10 border-t border-white/[0.06] max-w-5xl">
         <div class="mb-6 md:mb-8 flex flex-col md:flex-row md:items-end justify-between gap-3">
             <div>
-                <span class="text-[10px] uppercase tracking-[0.3em] text-text-ter block mb-2">( Credentials )</span>
-                <h3 class="font-display font-extrabold text-xl md:text-2xl tracking-tight reveal-line"><span class="reveal-line-inner">Certificazioni & Attestati</span></h3>
+                <span class="text-[10px] uppercase tracking-[0.3em] text-text-ter block mb-2" data-i18n="certs_label">( Credentials )</span>
+                <h3 class="font-display font-extrabold text-xl md:text-2xl tracking-tight reveal-line"><span class="reveal-line-inner" data-i18n="certs_title">Certificazioni & Attestati</span></h3>
             </div>
-            <span class="text-[10px] uppercase tracking-[0.2em] text-text-ter hidden md:block">Verified Credentials</span>
+            <span class="text-[10px] uppercase tracking-[0.2em] text-text-ter hidden md:block" data-i18n="certs_sub">Verified Credentials</span>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
@@ -753,18 +806,18 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                         </span>
                         <span class="text-[10px] text-text-ter tracking-wider uppercase">2 Certificati</span>
                     </div>
-                    <h4 class="font-display font-bold text-base md:text-lg text-text mb-1.5">Anthropic AI & Claude Certificates</h4>
-                    <p class="text-text-sec text-xs leading-relaxed mb-5">Attestati ufficiali sullo sviluppo di soluzioni AI, prompt engineering e integrazione dei modelli di Anthropic.</p>
+                    <h4 class="font-display font-bold text-base md:text-lg text-text mb-1.5" data-i18n="certs_anthropic_title">Anthropic AI & Claude Certificates</h4>
+                    <p class="text-text-sec text-xs leading-relaxed mb-5" data-i18n="certs_anthropic_desc">Attestati ufficiali sullo sviluppo di soluzioni AI, prompt engineering e integrazione dei modelli di Anthropic.</p>
                 </div>
                 
                 <div class="pt-3.5 border-t border-white/5 flex flex-wrap gap-2">
                     <a href="assets/certificates/Anthropic.pdf" target="_blank" class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-lg bg-white/5 hover:bg-white/15 text-text text-xs transition-colors border border-white/10 hoverable">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                        <span>Attestato I</span>
+                        <span data-i18n="certs_cert_1">Attestato I</span>
                     </a>
                     <a href="assets/certificates/Anthropic2.pdf" target="_blank" class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-lg bg-white/5 hover:bg-white/15 text-text text-xs transition-colors border border-white/10 hoverable">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                        <span>Attestato II</span>
+                        <span data-i18n="certs_cert_2">Attestato II</span>
                     </a>
                 </div>
             </div>
@@ -779,8 +832,8 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                         </span>
                         <span class="text-[10px] text-text-ter tracking-wider uppercase">3 Certificati</span>
                     </div>
-                    <h4 class="font-display font-bold text-base md:text-lg text-text mb-1.5">HackerRank Skill Certifications</h4>
-                    <p class="text-text-sec text-xs leading-relaxed mb-5">Valutazioni ufficiali sulle competenze tecniche di programmazione in JavaScript, CSS3 e Python.</p>
+                    <h4 class="font-display font-bold text-base md:text-lg text-text mb-1.5" data-i18n="certs_hackerrank_title">HackerRank Skill Certifications</h4>
+                    <p class="text-text-sec text-xs leading-relaxed mb-5" data-i18n="certs_hackerrank_desc">Valutazioni ufficiali sulle competenze tecniche di programmazione in JavaScript, CSS3 e Python.</p>
                 </div>
                 
                 <div class="pt-3.5 border-t border-white/5 flex flex-wrap gap-2">
@@ -809,18 +862,18 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                         </span>
                         <span class="text-[10px] text-text-ter tracking-wider uppercase">2 Attestati</span>
                     </div>
-                    <h4 class="font-display font-bold text-base md:text-lg text-text mb-1.5">Aulab Hackademy Attestati</h4>
-                    <p class="text-text-sec text-xs leading-relaxed mb-5">Attestati di completamento e specializzazione nel percorso Full-Stack Web Development.</p>
+                    <h4 class="font-display font-bold text-base md:text-lg text-text mb-1.5" data-i18n="certs_aulab_title">Aulab Hackademy Attestati</h4>
+                    <p class="text-text-sec text-xs leading-relaxed mb-5" data-i18n="certs_aulab_desc">Attestati di completamento e specializzazione nel percorso Full-Stack Web Development.</p>
                 </div>
                 
                 <div class="pt-3.5 border-t border-white/5 flex flex-wrap gap-2">
                     <a href="assets/certificates/aulab.pdf" target="_blank" class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-lg bg-white/5 hover:bg-white/15 text-text text-xs transition-colors border border-white/10 hoverable">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                        <span>Attestato I</span>
+                        <span data-i18n="certs_cert_1">Attestato I</span>
                     </a>
                     <a href="assets/certificates/aulab2.pdf" target="_blank" class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-lg bg-white/5 hover:bg-white/15 text-text text-xs transition-colors border border-white/10 hoverable">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                        <span>Attestato II</span>
+                        <span data-i18n="certs_cert_2">Attestato II</span>
                     </a>
                 </div>
             </div>
@@ -835,14 +888,14 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
                         </span>
                         <span class="text-[10px] text-text-ter tracking-wider uppercase">Verificato</span>
                     </div>
-                    <h4 class="font-display font-bold text-base md:text-lg text-text mb-1.5">Coursera Project Certificate</h4>
-                    <p class="text-text-sec text-xs leading-relaxed mb-5">Certificazione di progetto pratico autorizzata da Coursera Project Network per lo sviluppo su WordPress.</p>
+                    <h4 class="font-display font-bold text-base md:text-lg text-text mb-1.5" data-i18n="certs_coursera_title">Coursera Project Certificate</h4>
+                    <p class="text-text-sec text-xs leading-relaxed mb-5" data-i18n="certs_coursera_desc">Certificazione di progetto pratico autorizzata da Coursera Project Network per lo sviluppo su WordPress.</p>
                 </div>
                 
                 <div class="pt-3.5 border-t border-white/5 flex items-center gap-2">
                     <a href="assets/certificates/coursera.pdf" target="_blank" class="flex-1 inline-flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg bg-white/5 hover:bg-white/15 text-text text-xs transition-colors border border-white/10 hoverable">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                        <span>Vedi PDF</span>
+                        <span data-i18n="certs_view_pdf">Vedi PDF</span>
                     </a>
                     <a href="https://coursera.org/verify/HMND9HNN377T" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center p-2 rounded-lg bg-white/5 hover:bg-white/15 text-text-sec hover:text-text transition-colors border border-white/10 hoverable" title="Verifica Credenziale">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
@@ -856,44 +909,44 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
 <!-- Experience -->
 <section id="experience" class="pt-12 md:pt-16 pb-20 md:pb-32 px-6 md:px-10 lg:px-16">
     <div class="mb-12 md:mb-16">
-        <span class="text-[10px] uppercase tracking-[0.3em] text-text-ter block mb-3">( Experience )</span>
-        <h2 class="font-display font-extrabold text-2xl md:text-4xl lg:text-5xl tracking-tight reveal-line"><span class="reveal-line-inner">Where I've Worked</span></h2>
+        <span class="text-[10px] uppercase tracking-[0.3em] text-text-ter block mb-3" data-i18n="experience_label">( Experience )</span>
+        <h2 class="font-display font-extrabold text-2xl md:text-4xl lg:text-5xl tracking-tight reveal-line"><span class="reveal-line-inner" data-i18n="experience_title">Where I've Worked</span></h2>
     </div>
     <div class="relative max-w-2xl" id="timelineSection">
         <div class="timeline-line"><div class="timeline-fill" id="timelineFill"></div></div>
         <div class="timeline-entry pl-8 md:pl-12 pb-14 md:pb-16 relative">
             <div class="timeline-dot"></div>
             <span class="text-[10px] uppercase tracking-[0.2em] text-text-ter">2026</span>
-            <h3 class="font-display font-bold text-lg md:text-xl tracking-tight mt-1.5 mb-0.5">IT specialist</h3>
+            <h3 class="font-display font-bold text-lg md:text-xl tracking-tight mt-1.5 mb-0.5" data-i18n="exp_1_role">IT specialist</h3>
             <p class="text-text-sec text-sm">Eyelink s.r.l. — Venice</p>
-            <p class="text-text-sec/50 text-sm mt-2.5 leading-relaxed">Designed and deployed the end-to-end IT infrastructure for a maritime vessel. Built robust server networks from scratch and engineered high-availability networking solutions tailored for a complex, isolated environment.</p>
+            <p class="text-text-sec/50 text-sm mt-2.5 leading-relaxed" data-i18n="exp_1_desc">Designed and deployed the end-to-end IT infrastructure for a maritime vessel. Built robust server networks from scratch and engineered high-availability networking solutions tailored for a complex, isolated environment.</p>
         </div>
         <div class="timeline-entry pl-8 md:pl-12 pb-14 md:pb-16 relative">
             <div class="timeline-dot"></div>
             <span class="text-[10px] uppercase tracking-[0.2em] text-text-ter">2026</span>
-            <h3 class="font-display font-bold text-lg md:text-xl tracking-tight mt-1.5 mb-0.5">Freelance Frontend Developer</h3>
+            <h3 class="font-display font-bold text-lg md:text-xl tracking-tight mt-1.5 mb-0.5" data-i18n="exp_2_role">Freelance Frontend Developer</h3>
             <p class="text-text-sec text-sm">Tour Guide Business — Venice</p>
-            <p class="text-text-sec/50 text-sm mt-2.5 leading-relaxed">Designed and developed a custom website for a local tour guide business in Venice. Managed the complete frontend lifecycle, focusing on responsive design, performance optimization, and translating real client requirements into an engaging digital experience.</p>
+            <p class="text-text-sec/50 text-sm mt-2.5 leading-relaxed" data-i18n="exp_2_desc">Designed and developed a custom website for a local tour guide business in Venice. Managed the complete frontend lifecycle, focusing on responsive design, performance optimization, and translating real client requirements into an engaging digital experience.</p>
         </div>
         <div id="extraExperience" class="extra-experience-wrapper">
             <div class="timeline-entry pl-8 md:pl-12 pb-14 md:pb-16 relative">
                 <div class="timeline-dot"></div>
                 <span class="text-[10px] uppercase tracking-[0.2em] text-text-ter">2023 — 2026</span>
-                <h3 class="font-display font-bold text-lg md:text-xl tracking-tight mt-1.5 mb-0.5">E-Waste Logistics & Internal Developer</h3>
+                <h3 class="font-display font-bold text-lg md:text-xl tracking-tight mt-1.5 mb-0.5" data-i18n="exp_3_role">E-Waste Logistics & Internal Developer</h3>
                 <p class="text-text-sec text-sm">Re.Te. s.r.l. — Venice</p>
-                <p class="text-text-sec/50 text-sm mt-2.5 leading-relaxed">Managed maritime logistics for technological waste disposal across Venice, overseeing the entire lifecycle from client collection to mainland processing centers. Combining this operational insight with my tech skills, I independently designed and developed a database-driven map application to track jobs and streamline internal workflows.</p>
+                <p class="text-text-sec/50 text-sm mt-2.5 leading-relaxed" data-i18n="exp_3_desc">Managed maritime logistics for technological waste disposal across Venice, overseeing the entire lifecycle from client collection to mainland processing centers. Combining this operational insight with my tech skills, I independently designed and developed a database-driven map application to track jobs and streamline internal workflows.</p>
             </div>
             <div class="timeline-entry pl-8 md:pl-12 pb-14 md:pb-16 relative">
                 <div class="timeline-dot"></div>
                 <span class="text-[10px] uppercase tracking-[0.2em] text-text-ter">2016</span>
-                <h3 class="font-display font-bold text-lg md:text-xl tracking-tight mt-1.5 mb-0.5">Digitalization & Data Management</h3>
+                <h3 class="font-display font-bold text-lg md:text-xl tracking-tight mt-1.5 mb-0.5" data-i18n="exp_4_role">Digitalization & Data Management</h3>
                 <p class="text-text-sec text-sm">Ca' Foscari University Library — Venice</p>
-                <p class="text-text-sec/50 text-sm mt-2.5 leading-relaxed">Managed the digital transition of historical manuscripts by cataloging physical assets and migrating them into complex library management systems. This early experience built a strong foundation in database management, digital archiving, and organizational precision.</p>
+                <p class="text-text-sec/50 text-sm mt-2.5 leading-relaxed" data-i18n="exp_4_desc">Managed the digital transition of historical manuscripts by cataloging physical assets and migrating them into complex library management systems. This early experience built a strong foundation in database management, digital archiving, and organizational precision.</p>
             </div>
         </div>
         <div class="mt-4 pl-8 md:pl-12">
             <button id="toggleExperienceBtn" class="group inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full border border-white/15 bg-white/[0.03] hover:bg-white/10 text-text-sec hover:text-white text-xs tracking-wider uppercase transition-all duration-300 hoverable">
-                <span id="toggleExpText">Mostra tutte le esperienze (4)</span>
+                <span id="toggleExpText" data-i18n="experience_toggle_all">Mostra tutte le esperienze (4)</span>
                 <svg id="toggleExpIcon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform duration-300"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
         </div>
@@ -903,10 +956,10 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
 <!-- CTA -->
 <section id="contact" class="py-24 md:py-40 px-6 md:px-10 lg:px-16 overflow-hidden">
     <div class="text-center">
-        <span class="text-[10px] uppercase tracking-[0.3em] text-text-ter block mb-8 md:mb-12">( Get In Touch )</span>
-        <div class="overflow-hidden"><div class="cta-text reveal-line"><span class="reveal-line-inner">LET'S BUILD</span></div></div>
-        <div class="overflow-hidden"><div class="cta-text reveal-line"><span class="reveal-line-inner">SOMETHING</span></div></div>
-        <div class="overflow-hidden"><div class="cta-text reveal-line"><span class="reveal-line-inner">TOGETHER</span></div></div>
+        <span class="text-[10px] uppercase tracking-[0.3em] text-text-ter block mb-8 md:mb-12" data-i18n="cta_label">( Get In Touch )</span>
+        <div class="overflow-hidden"><div class="cta-text reveal-line"><span class="reveal-line-inner" data-i18n="cta_line_1">LET'S BUILD</span></div></div>
+        <div class="overflow-hidden"><div class="cta-text reveal-line"><span class="reveal-line-inner" data-i18n="cta_line_2">SOMETHING</span></div></div>
+        <div class="overflow-hidden"><div class="cta-text reveal-line"><span class="reveal-line-inner" data-i18n="cta_line_3">TOGETHER</span></div></div>
         <div class="mt-10 md:mt-14 reveal-line"><span class="reveal-line-inner">
             <a href="mailto:info@mattiascarpa.it" class="cta-button inline-flex items-center gap-3 px-8 py-4 rounded-full text-xs md:text-sm font-medium tracking-wide lowercase hoverable">
                 <span>info@mattiascarpa.it</span>
@@ -962,9 +1015,9 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
             <span class="font-display font-extrabold text-sm tracking-tight">M.S</span>
             <span class="text-text-ter text-[10px]">© 2026</span>
         </div>
-        <span class="text-text-ter/50 text-[10px] tracking-wider">Designed & Developed by Mattia Scarpa</span>
+        <span class="text-text-ter/50 text-[10px] tracking-wider" data-i18n="footer_rights">Designed & Developed by Mattia Scarpa</span>
         <a href="#" class="footer-link text-text-sec text-[10px] uppercase tracking-[0.15em] hoverable flex items-center gap-1.5" onclick="lenisInstance.scrollTo(0,{duration:2});return false;">
-            <span>Back to top</span>
+            <span data-i18n="footer_back_top">Back to top</span>
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
         </a>
     </div>
@@ -983,7 +1036,7 @@ tailwind.config={theme:{extend:{fontFamily:{display:['Syne','sans-serif'],body:[
 <!-- Floating Mode Switcher (Time Travel: Modalità 1995) -->
 <a href="retro/" id="retroModeToggle" class="retro-mode-toggle hoverable" title="Viaggia nel tempo: Modalità 1995" aria-label="Attiva Modalità Retrò 1995">
     <span class="retro-toggle-icon">💾</span>
-    <span class="retro-toggle-text">Modalità 1995</span>
+    <span class="retro-toggle-text" data-i18n="retro_toggle_text">Modalità 1995</span>
 </a>
 
 <script src="assets/data/projects.js"></script>

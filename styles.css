@@ -539,6 +539,124 @@ body {
     opacity: 1;
 }
 
+/* Language Switcher */
+.lang-switcher-wrapper {
+    position: relative;
+}
+
+.lang-switcher-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 12px;
+    border-radius: 9999px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--surface-border);
+    color: var(--text-main);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lang-switcher-btn:hover {
+    border-color: var(--accent);
+    background: var(--accent-subtle);
+    box-shadow: 0 0 16px var(--accent-glow);
+    transform: translateY(-1px);
+}
+
+.lang-flag {
+    font-size: 13px;
+    line-height: 1;
+}
+
+.lang-menu {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    width: 175px;
+    background: rgba(18, 18, 18, 0.94);
+    border: 1px solid var(--surface-border-hover);
+    border-radius: 16px;
+    padding: 8px;
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.8), 0 0 20px var(--accent-glow);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-8px) scale(0.96);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 200;
+}
+
+.lang-menu.open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+}
+
+.lang-menu-header {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-ter);
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--surface-border);
+    margin-bottom: 4px;
+}
+
+.lang-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-sec);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.lang-option:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
+    border-color: var(--surface-border);
+}
+
+.lang-option.active {
+    background: var(--accent-subtle);
+    color: var(--text-main);
+    border-color: var(--surface-border-hover);
+}
+
+.lang-option-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.lang-check {
+    opacity: 0;
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: bold;
+    transition: opacity 0.2s ease;
+}
+
+.lang-option.active .lang-check {
+    opacity: 1;
+}
+
 /* --- 8. HERO SECTION & HOLOGRAPHIC 3D CUBE --- */
 .hero {
     position: relative;
@@ -1122,6 +1240,24 @@ body {
     transform: translateX(4px);
 }
 
+.mobile-lang-btn {
+    border: 1px solid var(--surface-border);
+    background: var(--bg-elevated);
+    color: var(--text-sec);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.mobile-lang-btn:hover {
+    border-color: var(--accent);
+    color: var(--text-main);
+    background: var(--accent-subtle);
+}
+.mobile-lang-btn.active {
+    border-color: var(--accent);
+    background: var(--accent-subtle);
+    color: var(--text-main);
+    box-shadow: 0 0 12px var(--accent-glow);
+}
+
 /* --- 17. FLOATING RETRO MODE SWITCHER (1995 TIME TRAVEL) --- */
 .retro-mode-toggle {
     position: fixed;
@@ -1213,5 +1349,9 @@ body {
     .theme-menu {
         right: -30px;
         width: 210px;
+    }
+    .lang-menu {
+        right: -10px;
+        width: 165px;
     }
 }
