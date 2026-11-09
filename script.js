@@ -427,6 +427,10 @@ const TRANSLATIONS = {
 
 let currentLang = 'it';
 let typingTimeout = null;
+let roles = ['Full-Stack Developer', 'Creative Technologist', 'Ingegnere iOS & Swift', 'Specialista IT & DevOps'];
+let rIdx = 0, cIdx = 0, deleting = false;
+let projectsExpanded = false;
+let expExpanded = false;
 
 function setLanguage(lang) {
     if (!['it', 'en', 'es'].includes(lang)) lang = 'it';
@@ -708,10 +712,9 @@ if (navBar) {
 }
 
 // ==================== 8. TYPING EFFECT ====================
-let roles = (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang].hero_roles)
+roles = (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang].hero_roles)
     ? TRANSLATIONS[currentLang].hero_roles
     : ['Full-Stack Developer', 'Creative Technologist', 'Ingegnere iOS & Swift', 'Specialista IT & DevOps'];
-let rIdx = 0, cIdx = 0, deleting = false;
 
 function typeRole() {
     const roleTexts = document.querySelectorAll('.hero-role span:first-child');
@@ -742,7 +745,11 @@ function typeRole() {
 }
 
 // ==================== 9. PRELOADER & HERO REVEALS ====================
-window.addEventListener('load', () => {
+let preloaderDismissed = false;
+function dismissPreloader() {
+    if (preloaderDismissed) return;
+    preloaderDismissed = true;
+
     const preloaderFill = document.querySelector('.preloader-fill');
     const preTl = gsap.timeline({ onComplete: initScrollAnimations });
 
@@ -757,7 +764,15 @@ window.addEventListener('load', () => {
         .to('.hero-object', { opacity: 1, scale: 1, duration: 1.2, ease: 'power3.out' }, '-=0.8')
         .to('.hero-scroll', { opacity: 1, duration: 0.5, ease: 'power2.out' }, '-=0.4')
         .call(() => { typeRole(); });
-});
+}
+
+if (document.readyState === 'complete') {
+    dismissPreloader();
+} else {
+    window.addEventListener('load', dismissPreloader);
+    // Safety fallback: dismiss preloader if an external font/asset is slow to respond
+    setTimeout(dismissPreloader, 2800);
+}
 
 // ==================== 10. SCROLL ANIMATIONS & GSAP SETUP ====================
 function initScrollAnimations() {
@@ -1249,7 +1264,6 @@ document.addEventListener('keydown', (e) => {
 
 // ==================== 13. EXPAND / COLLAPSE SECTIONS ====================
 // Projects Expand / Collapse
-let projectsExpanded = false;
 const toggleProjectsBtn = document.getElementById('toggleProjectsBtn');
 const toggleProjectsText = document.getElementById('toggleProjectsText');
 const toggleProjectsIcon = document.getElementById('toggleProjectsIcon');
@@ -1258,9 +1272,10 @@ const workWrapper = document.querySelector('.work-wrapper');
 const allWorkCards = document.querySelectorAll('.work-card');
 
 function updateProjectsToggleText() {
-    if (!toggleProjectsText) return;
+    const el = document.getElementById('toggleProjectsText');
+    if (!el) return;
     const t = TRANSLATIONS[currentLang] || TRANSLATIONS.it;
-    toggleProjectsText.textContent = projectsExpanded ? t.work_toggle_less : `${t.work_toggle_all}`;
+    el.textContent = projectsExpanded ? t.work_toggle_less : `${t.work_toggle_all}`;
 }
 
 if (toggleProjectsBtn && extraCards.length > 0) {
@@ -1314,16 +1329,16 @@ if (toggleProjectsBtn && extraCards.length > 0) {
 }
 
 // Experience Expand / Collapse
-let expExpanded = false;
 const toggleExpBtn = document.getElementById('toggleExperienceBtn');
 const toggleExpText = document.getElementById('toggleExpText');
 const toggleExpIcon = document.getElementById('toggleExpIcon');
 const extraExp = document.getElementById('extraExperience');
 
 function updateExpToggleText() {
-    if (!toggleExpText) return;
+    const el = document.getElementById('toggleExpText');
+    if (!el) return;
     const t = TRANSLATIONS[currentLang] || TRANSLATIONS.it;
-    toggleExpText.textContent = expExpanded ? t.experience_toggle_less : t.experience_toggle_all;
+    el.textContent = expExpanded ? t.experience_toggle_less : t.experience_toggle_all;
 }
 
 if (toggleExpBtn && extraExp) {
