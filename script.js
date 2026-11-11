@@ -209,7 +209,12 @@ const TRANSLATIONS = {
         modal_year: "Anno",
         modal_link: "Link",
         modal_visit: "Visita il sito live",
-        modal_gallery: "Galleria"
+        modal_gallery: "Galleria",
+        loader_init: "Inizializzazione",
+        loader_styles: "Stile e layout",
+        loader_fonts: "Tipografia",
+        loader_assets: "Risorse visive",
+        loader_ready: "Pronto"
     },
     en: {
         nav_about: "About",
@@ -315,7 +320,12 @@ const TRANSLATIONS = {
         modal_year: "Year",
         modal_link: "Link",
         modal_visit: "Visit live website",
-        modal_gallery: "Gallery"
+        modal_gallery: "Gallery",
+        loader_init: "Initializing",
+        loader_styles: "Styles & layout",
+        loader_fonts: "Typography",
+        loader_assets: "Visual assets",
+        loader_ready: "Ready"
     },
     es: {
         nav_about: "Sobre mí",
@@ -421,12 +431,19 @@ const TRANSLATIONS = {
         modal_year: "Año",
         modal_link: "Enlace",
         modal_visit: "Visitar sitio web",
-        modal_gallery: "Galería"
+        modal_gallery: "Galería",
+        loader_init: "Inicializando",
+        loader_styles: "Estilos y diseño",
+        loader_fonts: "Tipografía",
+        loader_assets: "Recursos visuales",
+        loader_ready: "Listo"
     }
 };
 
 let currentLang = 'it';
 let typingTimeout = null;
+let heroRevealed = false;
+let scrollAnimationsInitialized = false;
 let roles = ['Full-Stack Developer', 'Creative Technologist', 'Ingegnere iOS & Swift', 'Specialista IT & DevOps'];
 let rIdx = 0, cIdx = 0, deleting = false;
 let projectsExpanded = false;
@@ -483,14 +500,23 @@ function setLanguage(lang) {
         }
     });
 
-    // Aggiorna ruoli typing animation
+    // Aggiorna ruoli typing animation senza interferire col preloader
     if (dict.hero_roles) {
         roles = dict.hero_roles;
         rIdx = 0;
         cIdx = 0;
         deleting = false;
-        if (typingTimeout) clearTimeout(typingTimeout);
-        typeRole();
+        if (typingTimeout) {
+            clearTimeout(typingTimeout);
+            typingTimeout = null;
+        }
+        if (heroRevealed) {
+            typeRole();
+        } else {
+            document.querySelectorAll('.hero-role span:first-child').forEach(el => {
+                el.textContent = '';
+            });
+        }
     }
 
     // Aggiorna schede progetti
@@ -601,6 +627,8 @@ updateVeniceTime();
 setInterval(updateVeniceTime, 30000);
 
 // ==================== 3. LENIS SMOOTH SCROLL ====================
+gsap.registerPlugin(ScrollTrigger);
+
 const lenisInstance = new Lenis({
     lerp: 0.085,
     smoothWheel: true,
@@ -610,6 +638,9 @@ const lenisInstance = new Lenis({
     smoothTouch: false,
     syncTouch: false
 });
+
+// Blocca lo scroll finché il caricamento reale non è completato
+lenisInstance.stop();
 
 lenisInstance.on('scroll', ScrollTrigger.update);
 
@@ -627,6 +658,8 @@ let mouseX = window.innerWidth / 2;
 let mouseY = window.innerHeight / 2;
 let glowX = mouseX;
 let glowY = mouseY;
+let lastGlowRenderX = -1;
+let lastGlowRenderY = -1;
 
 document.addEventListener('mousemove', (e) => {
     mouseX = e.clientX;
@@ -637,13 +670,16 @@ document.addEventListener('mousemove', (e) => {
     }
 });
 
-// Smooth RAF interpolation for ambient background light
+// Smooth compositor-only RAF interpolation for ambient background light
 function animateAmbientGlow() {
-    if (ambientGlow) {
+    if (ambientGlow && heroRevealed) {
         glowX += (mouseX - glowX) * 0.06;
         glowY += (mouseY - glowY) * 0.06;
-        ambientGlow.style.left = `${glowX}px`;
-        ambientGlow.style.top = `${glowY}px`;
+        if (Math.abs(glowX - lastGlowRenderX) > 0.15 || Math.abs(glowY - lastGlowRenderY) > 0.15) {
+            lastGlowRenderX = glowX;
+            lastGlowRenderY = glowY;
+            ambientGlow.style.transform = `translate3d(${glowX.toFixed(1)}px, ${glowY.toFixed(1)}px, 0) translate(-50%, -50%)`;
+        }
     }
     requestAnimationFrame(animateAmbientGlow);
 }
@@ -717,12 +753,16 @@ roles = (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang].hero_roles)
     : ['Full-Stack Developer', 'Creative Technologist', 'Ingegnere iOS & Swift', 'Specialista IT & DevOps'];
 
 function typeRole() {
+    if (typingTimeout) {
+        clearTimeout(typingTimeout);
+        typingTimeout = null;
+    }
     const roleTexts = document.querySelectorAll('.hero-role span:first-child');
     if (!roles || roles.length === 0) return;
     const cur = roles[rIdx] || roles[0];
     if (!deleting) {
         const txt = cur.substring(0, cIdx + 1);
-        roleTexts.forEach(el => el.textContent = txt);
+        roleTexts.forEach(el => { el.textContent = txt; });
         cIdx++;
         if (cIdx === cur.length) {
             deleting = true;
@@ -732,7 +772,7 @@ function typeRole() {
         typingTimeout = setTimeout(typeRole, 65);
     } else {
         const txt = cur.substring(0, cIdx - 1);
-        roleTexts.forEach(el => el.textContent = txt);
+        roleTexts.forEach(el => { el.textContent = txt; });
         cIdx--;
         if (cIdx === 0) {
             deleting = false;
@@ -744,42 +784,363 @@ function typeRole() {
     }
 }
 
-// ==================== 9. PRELOADER & HERO REVEALS ====================
+function startRoleTyping() {
+    if (typingTimeout) {
+        clearTimeout(typingTimeout);
+        typingTimeout = null;
+    }
+    rIdx = 0;
+    cIdx = 0;
+    deleting = false;
+    typeRole();
+}
+
+// ==================== 9. REAL PRELOADER & HERO REVEALS ====================
 let preloaderDismissed = false;
-function dismissPreloader() {
+const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function setPreloaderStatus(key) {
+    const statusEl = document.getElementById('preloaderStatus');
+    if (!statusEl) return;
+    statusEl.setAttribute('data-i18n', key);
+    const dict = TRANSLATIONS[currentLang] || TRANSLATIONS.it;
+    if (dict && dict[key]) {
+        statusEl.textContent = dict[key];
+    }
+}
+
+function waitForDOMReady() {
+    if (document.readyState !== 'loading') return Promise.resolve();
+    return new Promise(resolve => {
+        document.addEventListener('DOMContentLoaded', resolve, { once: true });
+    });
+}
+
+function waitForTailwindStyles(timeoutMs = 4500) {
+    return new Promise(resolve => {
+        const start = performance.now();
+        const probe = document.createElement('div');
+        probe.className = 'hidden';
+        probe.setAttribute('aria-hidden', 'true');
+        document.body.appendChild(probe);
+
+        function check() {
+            if (getComputedStyle(probe).display === 'none') {
+                probe.remove();
+                resolve(true);
+                return;
+            }
+            if (performance.now() - start >= timeoutMs) {
+                probe.remove();
+                resolve(false);
+                return;
+            }
+            requestAnimationFrame(check);
+        }
+        requestAnimationFrame(check);
+    });
+}
+
+function waitForWindowLoad(timeoutMs = 9000) {
+    if (document.readyState === 'complete') return Promise.resolve();
+    return new Promise(resolve => {
+        const timer = setTimeout(() => {
+            window.removeEventListener('load', onLoad);
+            resolve();
+        }, timeoutMs);
+        function onLoad() {
+            clearTimeout(timer);
+            resolve();
+        }
+        window.addEventListener('load', onLoad, { once: true });
+    });
+}
+
+function waitForFontsReady(onStep, timeoutMs = 6500) {
+    if (!document.fonts || typeof document.fonts.load !== 'function') {
+        if (onStep) onStep(1);
+        return Promise.resolve();
+    }
+    const criticalFaces = [
+        '800 1em Syne',
+        '700 1em Syne',
+        '400 1em "Space Grotesk"',
+        '500 1em "Space Grotesk"',
+        '700 1em "Space Grotesk"'
+    ];
+    let done = 0;
+    const total = criticalFaces.length;
+    const facePromises = criticalFaces.map(face =>
+        document.fonts.load(face).catch(() => []).finally(() => {
+            done++;
+            if (onStep) onStep(done / total);
+        })
+    );
+    return Promise.race([
+        Promise.all([Promise.all(facePromises), document.fonts.ready.catch(() => {})]),
+        new Promise(resolve => setTimeout(resolve, timeoutMs))
+    ]);
+}
+
+function waitForCriticalImagesAndDecode(onStep, timeoutMs = 8500) {
+    const eagerImages = Array.from(document.images).filter(img => {
+        const src = img.getAttribute('src');
+        return Boolean(src) && img.getAttribute('loading') !== 'lazy' && !img.closest('.work-card-extra');
+    });
+    if (eagerImages.length === 0) {
+        if (onStep) onStep(1);
+        return Promise.resolve();
+    }
+
+    let completed = 0;
+    const total = eagerImages.length;
+    const markDone = () => {
+        completed++;
+        if (onStep) onStep(completed / total);
+    };
+
+    const tasks = eagerImages.map(img => {
+        const loadDone = new Promise(resolve => {
+            if (img.complete) {
+                resolve();
+                return;
+            }
+            const finish = () => {
+                img.removeEventListener('load', finish);
+                img.removeEventListener('error', finish);
+                resolve();
+            };
+            img.addEventListener('load', finish, { once: true });
+            img.addEventListener('error', finish, { once: true });
+        });
+
+        const decoded = loadDone.then(() => {
+            if (typeof img.decode === 'function') {
+                return img.decode().catch(() => {});
+            }
+            return Promise.resolve();
+        });
+
+        return Promise.race([
+            decoded,
+            new Promise(resolve => setTimeout(resolve, timeoutMs))
+        ]).finally(markDone);
+    });
+
+    return Promise.all(tasks);
+}
+
+function nextFrames(count = 2) {
+    return new Promise(resolve => {
+        let remaining = count;
+        function tick() {
+            remaining--;
+            if (remaining <= 0) resolve();
+            else requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+    });
+}
+
+function revealSite() {
     if (preloaderDismissed) return;
     preloaderDismissed = true;
 
-    const preloaderFill = document.querySelector('.preloader-fill');
-    const preTl = gsap.timeline({ onComplete: initScrollAnimations });
+    const preloader = document.getElementById('preloader');
+    const liveRegion = document.getElementById('preloaderLiveRegion');
+    const dict = TRANSLATIONS[currentLang] || TRANSLATIONS.it;
+    if (liveRegion && dict && dict.loader_ready) {
+        liveRegion.textContent = dict.loader_ready;
+    }
+
+    if (preloader) {
+        preloader.style.pointerEvents = 'none';
+    }
+
+    if (prefersReducedMotion) {
+        gsap.set('.hero-badge', { y: 0, opacity: 1 });
+        gsap.set('.hero-line', { y: 0 });
+        gsap.set('.hero-role', { opacity: 1 });
+        gsap.set('.hero-subtitle', { opacity: 1 });
+        gsap.set('.hero-object', { opacity: 1, scale: 1 });
+        gsap.set('.hero-scroll', { opacity: 1 });
+        gsap.to(preloader, {
+            opacity: 0,
+            duration: 0.35,
+            ease: 'power2.out',
+            onComplete: () => {
+                if (preloader) preloader.style.display = 'none';
+                document.body.classList.remove('is-preloading');
+                lenisInstance.start();
+                ScrollTrigger.refresh();
+                heroRevealed = true;
+                startRoleTyping();
+            }
+        });
+        return;
+    }
+
+    const preTl = gsap.timeline({
+        onComplete: () => {
+            if (preloader) {
+                preloader.style.visibility = 'hidden';
+                preloader.style.display = 'none';
+            }
+            ScrollTrigger.refresh();
+        }
+    });
 
     preTl
-        .to(preloaderFill, { width: '100%', duration: 0.9, ease: 'power2.inOut' })
-        .to('.preloader-text', { y: -20, opacity: 0, duration: 0.35, ease: 'power2.in' }, '+=0.1')
-        .to('.preloader', { yPercent: -100, duration: 0.7, ease: 'power3.inOut' })
-        .set('.preloader', { display: 'none' })
-        .to('.hero-line', { y: 0, duration: 1.1, ease: 'power3.out', stagger: 0.08 }, '-=0.2')
-        .to('.hero-role', { opacity: 1, duration: 0.6, ease: 'power2.out' }, '-=0.5')
-        .to('.hero-subtitle', { opacity: 1, duration: 0.6, ease: 'power2.out' }, '-=0.4')
-        .to('.hero-object', { opacity: 1, scale: 1, duration: 1.2, ease: 'power3.out' }, '-=0.8')
-        .to('.hero-scroll', { opacity: 1, duration: 0.5, ease: 'power2.out' }, '-=0.4')
-        .call(() => { typeRole(); });
+        .to('.preloader-inner', { y: -16, opacity: 0, duration: 0.45, ease: 'power2.inOut' })
+        .to(preloader, {
+            yPercent: -100,
+            duration: 0.85,
+            ease: 'power3.inOut',
+            onComplete: () => {
+                document.body.classList.remove('is-preloading');
+                lenisInstance.start();
+            }
+        }, '-=0.15')
+        .to('.hero-badge', { y: 0, opacity: 1, duration: 0.75, ease: 'power3.out' }, '-=0.45')
+        .to('.hero-line', { y: 0, duration: 1.15, ease: 'power3.out', stagger: 0.1 }, '-=0.6')
+        .to('.hero-role', { opacity: 1, duration: 0.65, ease: 'power2.out' }, '-=0.55')
+        .to('.hero-subtitle', { opacity: 1, duration: 0.65, ease: 'power2.out' }, '-=0.45')
+        .to('.hero-object', { opacity: 1, scale: 1, duration: 1.15, ease: 'power3.out' }, '-=0.85')
+        .to('.hero-scroll', { opacity: 1, duration: 0.55, ease: 'power2.out' }, '-=0.45')
+        .call(() => {
+            heroRevealed = true;
+            startRoleTyping();
+        }, null, '-=0.55');
 }
 
-if (document.readyState === 'complete') {
-    dismissPreloader();
-} else {
-    window.addEventListener('load', dismissPreloader);
-    // Safety fallback: dismiss preloader if an external font/asset is slow to respond
-    setTimeout(dismissPreloader, 2800);
+function runRealPreloader() {
+    const progressEl = document.getElementById('preloaderProgress');
+    const percentEl = document.getElementById('preloaderPercent');
+
+    let targetProgress = 6;
+    let displayProgress = 0;
+    let stageCeiling = 22;
+    let readinessComplete = false;
+    let visualDone = false;
+
+    const startTime = performance.now();
+    const minCalmDuration = prefersReducedMotion ? 150 : 750;
+    let lastFrameTime = startTime;
+    let rafId = null;
+
+    const setTarget = (value, nextCeiling) => {
+        if (value > targetProgress) targetProgress = Math.min(100, value);
+        if (typeof nextCeiling === 'number' && nextCeiling > stageCeiling) {
+            stageCeiling = Math.min(100, nextCeiling);
+        }
+    };
+
+    function tickProgress(now) {
+        const dt = Math.min((now - lastFrameTime) / 1000, 0.05);
+        lastFrameTime = now;
+
+        // While a real phase is actively loading, keep a calm trickle capped strictly below its completion threshold
+        if (!readinessComplete && targetProgress < stageCeiling - 1.5) {
+            targetProgress = Math.min(stageCeiling - 1.5, targetProgress + dt * 4.5);
+        }
+
+        const dampingSpeed = readinessComplete ? 7.5 : 5.5;
+        const factor = 1 - Math.exp(-dampingSpeed * dt);
+        displayProgress += (targetProgress - displayProgress) * factor;
+
+        const clamped = Math.min(100, Math.max(0, displayProgress));
+        if (progressEl) progressEl.value = clamped;
+        if (percentEl) percentEl.textContent = `${Math.round(clamped)}%`;
+
+        if (readinessComplete && !visualDone && (now - startTime) >= minCalmDuration && clamped >= 99.4) {
+            visualDone = true;
+            if (progressEl) progressEl.value = 100;
+            if (percentEl) percentEl.textContent = '100%';
+            setTimeout(revealSite, prefersReducedMotion ? 80 : 240);
+            return;
+        }
+
+        rafId = requestAnimationFrame(tickProgress);
+    }
+
+    rafId = requestAnimationFrame(tickProgress);
+
+    (async function orchestrateLoad() {
+        try {
+            setPreloaderStatus('loader_init');
+            await waitForDOMReady();
+            setTarget(14, 28);
+
+            setPreloaderStatus('loader_styles');
+            await waitForTailwindStyles();
+            setTarget(26, 46);
+
+            await waitForWindowLoad();
+            setTarget(44, 68);
+
+            setPreloaderStatus('loader_fonts');
+            await waitForFontsReady((ratio) => {
+                setTarget(44 + ratio * 22, 68);
+            });
+            setTarget(66, 90);
+
+            setPreloaderStatus('loader_assets');
+            await waitForCriticalImagesAndDecode((ratio) => {
+                setTarget(66 + ratio * 24, 92);
+            });
+            setTarget(90, 99);
+
+            // Stabilize layout and calibrate all ScrollTriggers BEFORE lifting the curtain
+            setPreloaderStatus('loader_ready');
+            await nextFrames(2);
+            initScrollAnimations();
+            ScrollTrigger.refresh(true);
+            await nextFrames(1);
+
+            targetProgress = 100;
+            stageCeiling = 100;
+            readinessComplete = true;
+        } catch (err) {
+            initScrollAnimations();
+            ScrollTrigger.refresh();
+            targetProgress = 100;
+            stageCeiling = 100;
+            readinessComplete = true;
+        }
+    })();
+
+    // Emergency fallback only if an external resource hangs completely offline
+    setTimeout(() => {
+        if (!readinessComplete) {
+            initScrollAnimations();
+            ScrollTrigger.refresh();
+            targetProgress = 100;
+            stageCeiling = 100;
+            readinessComplete = true;
+        }
+        setTimeout(() => {
+            if (!preloaderDismissed) {
+                if (rafId) cancelAnimationFrame(rafId);
+                if (progressEl) progressEl.value = 100;
+                if (percentEl) percentEl.textContent = '100%';
+                revealSite();
+            }
+        }, 1200);
+    }, 11500);
 }
+
+runRealPreloader();
 
 // ==================== 10. SCROLL ANIMATIONS & GSAP SETUP ====================
 function initScrollAnimations() {
+    if (scrollAnimationsInitialized) return;
+    scrollAnimationsInitialized = true;
     gsap.registerPlugin(ScrollTrigger);
 
-    // Floating 3D Scene animation
-    gsap.to('.cube-scene', { y: '-=16', duration: 3.5, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 1 });
+    // Floating 3D Scene animation (skipped when reduced motion is requested)
+    if (!prefersReducedMotion) {
+        gsap.to('.cube-scene', { y: '-=16', duration: 3.5, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 1 });
+    }
 
     // Interactive Holographic Cube 3D Physics
     document.querySelectorAll('.hero-object').forEach(heroObj => {
@@ -817,7 +1178,9 @@ function initScrollAnimations() {
     });
 
     // Floating 3D Octahedron Beacon animation
-    gsap.to('.octa-scene', { y: '-=14', duration: 3.2, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 0.5 });
+    if (!prefersReducedMotion) {
+        gsap.to('.octa-scene', { y: '-=14', duration: 3.2, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 0.5 });
+    }
 
     // Interactive Holographic Diamond Beacon 3D Physics
     document.querySelectorAll('.cta-object').forEach(ctaObj => {
@@ -871,21 +1234,23 @@ function initScrollAnimations() {
     });
 
     // CTA Beacon scroll entrance
-    gsap.from('.cta-3d-wrapper', {
-        scale: 0.75,
-        opacity: 0,
-        duration: 1.2,
-        ease: 'power3.out',
-        scrollTrigger: {
-            trigger: '#contact',
-            start: 'top 80%',
-            toggleActions: 'play none none none'
-        }
-    });
+    if (!prefersReducedMotion) {
+        gsap.from('.cta-3d-wrapper', {
+            scale: 0.75,
+            opacity: 0,
+            duration: 1.2,
+            ease: 'power3.out',
+            scrollTrigger: {
+                trigger: '#contact',
+                start: 'top 80%',
+                toggleActions: 'play none none none'
+            }
+        });
+    }
 
     // Hero Parallax
     const heroEl = document.querySelector('.hero');
-    if (heroEl) {
+    if (heroEl && !prefersReducedMotion) {
         gsap.to(heroEl.querySelector('.hero-content'), {
             y: -110,
             ease: 'none',
@@ -900,26 +1265,31 @@ function initScrollAnimations() {
     }
 
     // Text line reveals
-    gsap.utils.toArray('.reveal-line-inner').forEach(el => {
-        gsap.to(el, {
-            y: 0,
-            duration: 0.9,
-            ease: 'power3.out',
-            scrollTrigger: {
-                trigger: el.closest('.reveal-line'),
-                start: 'top 90%',
-                toggleActions: 'play none none none'
-            }
+    if (prefersReducedMotion) {
+        gsap.set('.reveal-line-inner', { y: 0 });
+        gsap.set('#aboutLine', { width: '100%' });
+    } else {
+        gsap.utils.toArray('.reveal-line-inner').forEach(el => {
+            gsap.to(el, {
+                y: 0,
+                duration: 0.9,
+                ease: 'power3.out',
+                scrollTrigger: {
+                    trigger: el.closest('.reveal-line'),
+                    start: 'top 90%',
+                    toggleActions: 'play none none none'
+                }
+            });
         });
-    });
 
-    // About draw line
-    gsap.to('#aboutLine', {
-        width: '100%',
-        duration: 1.4,
-        ease: 'power2.out',
-        scrollTrigger: { trigger: '#aboutLine', start: 'top 85%', toggleActions: 'play none none none' }
-    });
+        // About draw line
+        gsap.to('#aboutLine', {
+            width: '100%',
+            duration: 1.4,
+            ease: 'power2.out',
+            scrollTrigger: { trigger: '#aboutLine', start: 'top 85%', toggleActions: 'play none none none' }
+        });
+    }
 
     // Animated Stat Counters
     document.querySelectorAll('.stat-item').forEach(item => {
@@ -991,20 +1361,22 @@ function initScrollAnimations() {
     }
 
     // ---- BENTO SKILLS ANIMATION ----
-    gsap.utils.toArray('.skill-bento-card').forEach((card, i) => {
-        gsap.from(card, {
-            y: 35,
-            opacity: 0,
-            duration: 0.8,
-            ease: 'power3.out',
-            scrollTrigger: {
-                trigger: card,
-                start: 'top 88%',
-                toggleActions: 'play none none none'
-            },
-            delay: (i % 2) * 0.12
+    if (!prefersReducedMotion) {
+        gsap.utils.toArray('.skill-bento-card').forEach((card, i) => {
+            gsap.from(card, {
+                y: 35,
+                opacity: 0,
+                duration: 0.8,
+                ease: 'power3.out',
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 88%',
+                    toggleActions: 'play none none none'
+                },
+                delay: (i % 2) * 0.12
+            });
         });
-    });
+    }
 
     // ---- TIMELINE EXPERIENCE PROGRESS ----
     const timelineSection = document.getElementById('timelineSection');
@@ -1034,17 +1406,19 @@ function initScrollAnimations() {
     });
 
     // ---- CTA SCALE EFFECT ----
-    gsap.to('.cta-text', {
-        scale: 0.9,
-        opacity: 0.4,
-        ease: 'none',
-        scrollTrigger: {
-            trigger: '#contact',
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: true
-        }
-    });
+    if (!prefersReducedMotion) {
+        gsap.to('.cta-text', {
+            scale: 0.9,
+            opacity: 0.4,
+            ease: 'none',
+            scrollTrigger: {
+                trigger: '#contact',
+                start: 'top bottom',
+                end: 'bottom top',
+                scrub: true
+            }
+        });
+    }
 
     // Init project overlay & cards
     initProjectOverlayLogic();
